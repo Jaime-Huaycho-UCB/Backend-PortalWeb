@@ -17,13 +17,15 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('usuario/inicioSesion','UsuarioController@iniciarSesion');
+
 
 $router->group(['prefix' => 'docente'], function () use ($router){
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
     $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
+    $router->get('/obtener','Docente\DocenteController@obtenerDocentes');
 });
 
-$router->group(['prefix' => 'docente'], function () use ($router){
-    $router->get('/obtener','Docente\DocenteController@obtenerDocentes');
+$router->group(['prefix' => 'usuario'], function () use ($router){
+    $router->post('/inicioSesion','UsuarioController@iniciarSesion');
+    $router->post('/eliminar','UsuarioController@eliminarUsuario');
 });

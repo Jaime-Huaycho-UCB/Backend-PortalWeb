@@ -12,10 +12,11 @@ use Laravel\Lumen\Auth\Authorizable;
 class Usuario extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
+    public $timestamps = false;
     protected $table = 'USUARIO';
     protected $primarykey = 'id';
 
     protected $fillable = [
-        'correo', 'contrasena', 'permiso','docente'
+        'correo', 'contrasena', 'permiso','docente','Eliminado'
     ];
 }

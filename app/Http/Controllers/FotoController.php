@@ -13,4 +13,9 @@ class FotoController extends Controller{
         $foto->save();
         return $foto->id;
     }
+
+    public function obtenerRuta(int $id){
+        $ruta = Foto::where('id','=',$id)->first();
+        return $ruta['ruta'];
+    }
 }

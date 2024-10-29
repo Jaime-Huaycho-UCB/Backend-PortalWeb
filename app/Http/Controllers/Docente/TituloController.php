@@ -21,4 +21,9 @@ class TituloController extends Controller{
             ],200);
         }
     }
+
+    public function obtenerNombre(int $id){
+        $nombre = Titulo::where('id','=',$id)->first();
+        return $nombre['nombre'];
+    }
 }
