@@ -7,5 +7,10 @@ use Illuminate\Http\Request;
 
 
 class FotoController extends Controller{
-
+    public function ingresarFoto($ruta){
+        $foto = new Foto();
+        $foto->ruta = $ruta;
+        $foto->save();
+        return $foto->id;
+    }
 }

@@ -13,6 +13,9 @@ class Foto extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, HasFactory;
 
+    public $timestamps = false;
+
+
     protected $table = 'FOTO';
     protected $primarykey = 'id';
     protected $fillable = [

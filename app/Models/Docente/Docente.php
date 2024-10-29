@@ -13,6 +13,9 @@ class Docente extends Model implements AuthenticatableContract, AuthorizableCont
 {
     use Authenticatable, Authorizable, HasFactory;
 
+    public $timestamps = false;
+
+
     protected $table = 'DOCENTE';
     protected $primarykey = 'id';
     protected $fillable = [
