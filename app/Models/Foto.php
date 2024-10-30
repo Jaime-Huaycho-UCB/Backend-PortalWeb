@@ -12,10 +12,7 @@ use Laravel\Lumen\Auth\Authorizable;
 class Foto extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
-
     public $timestamps = false;
-
-
     protected $table = 'FOTO';
     protected $primarykey = 'id';
     protected $fillable = [

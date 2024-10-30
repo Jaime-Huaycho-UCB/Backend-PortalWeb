@@ -15,7 +15,6 @@ class Usuario extends Model implements AuthenticatableContract, AuthorizableCont
     public $timestamps = false;
     protected $table = 'USUARIO';
     protected $primarykey = 'id';
-
     protected $fillable = [
         'correo', 'contrasena', 'permiso','docente','Eliminado'
     ];

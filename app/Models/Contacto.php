@@ -12,7 +12,7 @@ use Laravel\Lumen\Auth\Authorizable;
 class Contacto extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
-
+    public $timestamps = false;
     protected $table = 'CONTACTO';
     protected $primarykey = 'id';
     protected $fillable = [

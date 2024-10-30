@@ -12,7 +12,7 @@ use Laravel\Lumen\Auth\Authorizable;
 class NivelAcademico extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
-
+    public $timestamps = false;
     protected $table = 'NIVEL_ACADEMICO';
     protected $primarykey = 'id';
     protected $fillable = [

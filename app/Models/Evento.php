@@ -12,7 +12,7 @@ use Laravel\Lumen\Auth\Authorizable;
 class Evento extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
-
+    public $timestamps = false;
     protected $table = 'EVENTO';
     protected $primarykey = 'id';
     protected $fillable = [
