@@ -19,6 +19,6 @@ class Foto extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $table = 'FOTO';
     protected $primarykey = 'id';
     protected $fillable = [
-        'ruta',
+        'ruta','Eliminado'
     ];
 }

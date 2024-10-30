@@ -16,6 +16,6 @@ class Evento extends Model implements AuthenticatableContract, AuthorizableContr
     protected $table = 'EVENTO';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre','descripcion','director','fecha','lugar','foto'
+        'nombre','descripcion','director','fecha','lugar','foto','Eliminado'
     ];
 }

@@ -16,6 +16,6 @@ class Tesis extends Model implements AuthenticatableContract, AuthorizableContra
     protected $table = 'TESIS';
     protected $primarykey = 'id';
     protected $fillable = [
-        'titulo','fecha_publicacion','resumen'
+        'titulo','fecha_publicacion','resumen','Eliminado'
     ];
 }

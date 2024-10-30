@@ -16,6 +16,6 @@ class PapersDocente extends Model implements AuthenticatableContract, Authorizab
     protected $table = 'PAPERS_DOCENTE';
     protected $primarykey = 'id';
     protected $fillable = [
-        'docente','papers'
+        'docente','papers','Eliminado'
     ];
 }

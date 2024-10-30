@@ -16,6 +16,6 @@ class NivelAcademico extends Model implements AuthenticatableContract, Authoriza
     protected $table = 'NIVEL_ACADEMICO';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre'
+        'nombre','Eliminado'
     ];
 }

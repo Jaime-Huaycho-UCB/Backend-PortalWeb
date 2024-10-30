@@ -19,6 +19,6 @@ class Docente extends Model implements AuthenticatableContract, AuthorizableCont
     protected $table = 'DOCENTE';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre','correo','titulo','frase','foto'
+        'nombre','correo','titulo','frase','foto','Eliminado'
     ];
 }

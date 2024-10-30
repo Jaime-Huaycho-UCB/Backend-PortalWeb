@@ -18,4 +18,14 @@ class FotoController extends Controller{
         $ruta = Foto::where('id','=',$id)->first();
         return $ruta['ruta'];
     }
+
+    public function eliminarFoto(Request $request){
+        $id = $request->input('foto');
+        $foto = Foto::find($id);
+        $foto->Eliminado = 1;
+        $foto->save();
+        return response()->json([
+            "mensaje" => "La foto se elimino exitosamente"
+        ],200);
+    }
 }

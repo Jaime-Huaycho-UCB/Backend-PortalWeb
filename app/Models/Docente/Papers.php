@@ -16,6 +16,6 @@ class Papers extends Model implements AuthenticatableContract, AuthorizableContr
     protected $table = 'PAPERS';
     protected $primarykey = 'id';
     protected $fillable = [
-        'link'
+        'link','Eliminado'
     ];
 }

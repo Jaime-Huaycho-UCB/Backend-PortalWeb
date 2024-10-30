@@ -16,6 +16,6 @@ class Pensum extends Model implements AuthenticatableContract, AuthorizableContr
     protected $primarykey = 'id';
 
     protected $fillable = [
-        'archivo', 'estaActivo'
+        'archivo', 'estaActivo','Eliminado'
     ];
 }

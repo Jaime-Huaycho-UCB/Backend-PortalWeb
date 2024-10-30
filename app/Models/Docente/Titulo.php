@@ -16,6 +16,6 @@ class Titulo extends Model implements AuthenticatableContract, AuthorizableContr
     protected $table = 'TITULO';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre'
+        'nombre','Eliminado'
     ];
 }
