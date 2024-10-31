@@ -22,10 +22,18 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'docente'], function () use ($router){
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
     $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
-    $router->get('/obtener','Docente\DocenteController@obtenerDocentes');
+    $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
+    $router->put('/eliminar','Docente\DocenteController@eliminarDocente');
+    $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
 });
 
 $router->group(['prefix' => 'usuario'], function () use ($router){
     $router->post('/inicioSesion','UsuarioController@iniciarSesion');
     $router->post('/eliminar','UsuarioController@eliminarUsuario');
+    $router->post('/crear','UsuarioController@crearUsuario');
+    $router->post('/obtener','UsuarioController@obtenerUsuarios');
+});
+
+$router->group(['prefix' => 'titulo'], function () use ($router){
+    $router->get('/obtener','Docente\TituloController@obtenerTitulos');
 });

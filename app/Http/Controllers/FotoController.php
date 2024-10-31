@@ -28,4 +28,10 @@ class FotoController extends Controller{
             "mensaje" => "La foto se elimino exitosamente"
         ],200);
     }
+
+    public function actualizarRuta(int $id,string $ruta){
+        $foto = Foto::find($id);
+        $foto->ruta = $ruta;
+        $foto->save();
+    }
 }

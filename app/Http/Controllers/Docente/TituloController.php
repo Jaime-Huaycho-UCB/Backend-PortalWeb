@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class TituloController extends Controller{
 
     public function obtenerTitulos(){
-        $titulos = Titulo::all();
+        $titulos = Titulo::where('Eliminado','=',0)->get();
         if ($titulos->isNotEmpty()){
             return response()->json([
                 "salida" => true,
