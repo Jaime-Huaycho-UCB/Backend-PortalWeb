@@ -125,4 +125,20 @@ class DocenteController extends Controller{
         $docente = Docente::find($id);
         return $docente;
     }
+
+    public function obtenerDocentesTodo(Request $request){
+        $docentes = Docente::where('Eliminado','=',0)
+                            ->where('nombre','<>','SuperUsuario')->get();
+        if ($docentes->isNotEmpty()){
+            $docentesSalida = $this->llenarTitulosRutas($docentes);
+            return response()->json([
+                "salida" => true,
+                "docentes" => $docentesSalida
+            ],200);
+        }else{
+            return response()->json([
+                "salida" => false
+            ],404);
+        }
+    }
 }

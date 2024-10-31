@@ -23,6 +23,7 @@ $router->group(['prefix' => 'docente'], function () use ($router){
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
     $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
     $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
+    $router->post('/obtener/todo','Docente\DocenteController@obtenerDocentesTodo');
     $router->put('/eliminar','Docente\DocenteController@eliminarDocente');
     $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
 });

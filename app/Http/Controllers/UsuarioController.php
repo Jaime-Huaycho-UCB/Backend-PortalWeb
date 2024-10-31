@@ -88,7 +88,9 @@ class UsuarioController extends Controller{
 
     public function obtenerUsuarios(Request $request){
         $docenteController = new DocenteController();
-        $usuarios = Usuario::where('Eliminado','=',0)->get();
+        $usuarios = Usuario::where('Eliminado','=',0)
+                            ->where('permiso','=',0)
+                            ->get();
         $salida = array();
         if ($usuarios->isNotEmpty()){
             foreach ($usuarios as $usuario){
