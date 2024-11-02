@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Docente;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\Docente\TituloController;
 use App\Http\Controllers\UsuarioController;
 use App\Models\Docente\Docente;
+use App\Models\Docente\Titulo;
 use Illuminate\Http\Request;
 
 
@@ -13,7 +15,7 @@ class DocenteController extends Controller{
     public function agregarDocente(Request $request){
         $fotoController = new FotoController();
         if (!($this->existe($request->input('correo')))){
-            $idFoto = $fotoController->ingresarFoto($request->input('ruta'));
+            $idFoto = $fotoController->ingresarFoto($request->input('fotoBase64'));
             $docente = new Docente();
             $docente->nombre = $request->input('nombre');
             $docente->correo = $request->input('correo');
@@ -46,7 +48,7 @@ class DocenteController extends Controller{
         $docentes = Docente::where('Eliminado','=',0)
                             ->where('nombre','<>','SuperUsuario')->get();
         if ($docentes->isNotEmpty()){
-            $docentesSalida = $this->llenarTitulosRutas($docentes);
+            $docentesSalida = $this->llenarTituloFoto($docentes);
             $docentesSalida = $this->filtrarDocentesSinUsuario($docentesSalida);
             return response()->json([
                 "salida" => true,
@@ -59,7 +61,7 @@ class DocenteController extends Controller{
         }
     }
 
-    public function llenarTitulosRutas($docentes){
+    public function llenarTituloFoto($docentes){
         $tituloController = new TituloController();
         $fotoController = new FotoController();
         $salidaDocentes = array();
@@ -70,7 +72,7 @@ class DocenteController extends Controller{
                 "correo" => $docente['correo'],
                 "titulo" => $tituloController->obtenerNombre($docente['titulo']),
                 "frase" => $docente['frase'],
-                "ruta" => $fotoController->obtenerRuta($docente['foto'])
+                "foto" => $fotoController->obtenerFoto($docente['foto'])
             ];
             array_push($salidaDocentes,$temporal);
         }
@@ -91,12 +93,13 @@ class DocenteController extends Controller{
         $id = $request->input('id');
         $fotoController = new FotoController();
         $docente = Docente::find($id);
+        $idFoto = $fotoController->actualizarRuta($docente->foto,$request->input('foto'));
         $docente->nombre = $request->input('nombre');
         $docente->correo = $request->input('correo');
         $docente->titulo = $request->input('titulo');
         $docente->frase = $request->input('frase');
+        $docente->foto = $idFoto;
         $docente->save();
-        $fotoController->actualizarRuta($docente->foto,$request->input('ruta'));
         return response()->json([
             "mensaje" => "Se actualizo exitosamente el docente"
         ],200);
@@ -130,7 +133,7 @@ class DocenteController extends Controller{
         $docentes = Docente::where('Eliminado','=',0)
                             ->where('nombre','<>','SuperUsuario')->get();
         if ($docentes->isNotEmpty()){
-            $docentesSalida = $this->llenarTitulosRutas($docentes);
+            $docentesSalida = $this->llenarTituloFoto($docentes);
             return response()->json([
                 "salida" => true,
                 "docentes" => $docentesSalida
@@ -138,7 +141,7 @@ class DocenteController extends Controller{
         }else{
             return response()->json([
                 "salida" => false
-            ],404);
+            ],200);
         }
     }
 }

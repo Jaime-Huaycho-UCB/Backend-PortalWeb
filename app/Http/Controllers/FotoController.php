@@ -7,16 +7,29 @@ use Illuminate\Http\Request;
 
 
 class FotoController extends Controller{
-    public function ingresarFoto($ruta){
-        $foto = new Foto();
-        $foto->ruta = $ruta;
-        $foto->save();
-        return $foto->id;
+    public function ingresarFoto($fotoBase64){
+        if ($fotoBase64) {
+            $fotoContenido = base64_decode($fotoBase64);
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $fotoTipo = $finfo->buffer($fotoContenido);
+            $foto = new Foto();
+            $foto->contenido = $fotoContenido;
+            $foto->tipo = $fotoTipo;
+            $foto->save();
+            return $foto->id;
+        }else{
+            return null;
+        }
     }
 
-    public function obtenerRuta(int $id){
-        $ruta = Foto::where('id','=',$id)->first();
-        return $ruta['ruta'];
+    public function obtenerFoto(int $id){
+        $foto = Foto::where('id','=',$id)
+                    ->where('Eliminado','=',0)
+                    ->first();
+        $base64Content = base64_encode($foto->contenido);
+        $tipo = $foto->tipo; 
+        $imagenBase64 = "data:$tipo;base64,$base64Content";
+        return $imagenBase64;
     }
 
     public function eliminarFoto(Request $request){
@@ -29,9 +42,19 @@ class FotoController extends Controller{
         ],200);
     }
 
-    public function actualizarRuta(int $id,string $ruta){
-        $foto = Foto::find($id);
-        $foto->ruta = $ruta;
-        $foto->save();
+    public function actualizarRuta(int $id,string $fotoBase64){
+        if ($fotoBase64) {
+            $fotoContenido = base64_decode($fotoBase64);
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $fotoTipo = $finfo->buffer($fotoContenido);
+            $foto = Foto::find($id);
+            $foto->contenido = $fotoContenido;
+            $foto->tipo = $fotoTipo;
+            $foto->save();
+            return $foto->id;
+        }else{
+            return null;
+        }
+        
     }
 }

@@ -20,21 +20,43 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'docente'], function () use ($router){
+    // Funciones con token
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
-    $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
-    $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
     $router->post('/obtener/todo','Docente\DocenteController@obtenerDocentesTodo');
     $router->put('/eliminar','Docente\DocenteController@eliminarDocente');
     $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
+    // Funciones sin token
+    $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
+    $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
 });
 
 $router->group(['prefix' => 'usuario'], function () use ($router){
+    // Funciones con token
     $router->post('/inicioSesion','UsuarioController@iniciarSesion');
     $router->post('/eliminar','UsuarioController@eliminarUsuario');
     $router->post('/crear','UsuarioController@crearUsuario');
     $router->post('/obtener','UsuarioController@obtenerUsuarios');
+    //Funciones sin token
 });
 
 $router->group(['prefix' => 'titulo'], function () use ($router){
     $router->get('/obtener','Docente\TituloController@obtenerTitulos');
+});
+
+$router->group(['prefix' => 'noticia'], function () use ($router){
+});
+
+$router->group(['prefix' => 'evento'], function () use ($router){
+});
+
+$router->group(['prefix' => 'estudiante'], function () use ($router){
+});
+
+$router->group(['prefix' => 'solicitud'], function () use ($router){
+});
+
+$router->group(['prefix' => 'pensum'], function () use ($router){
+});
+
+$router->group(['prefix' => 'contacto'], function () use ($router){
 });

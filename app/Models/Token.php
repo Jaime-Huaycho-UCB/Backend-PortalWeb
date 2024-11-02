@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Estudiante;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Tesis extends Model implements AuthenticatableContract, AuthorizableContract
+class Token extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
     public $timestamps = false;
-    protected $table = 'TESIS';
+    protected $table = 'TOKEN';
     protected $primarykey = 'id';
     protected $fillable = [
-        'titulo','contenido','tipo','fecha_publicacion','resumen','Eliminado'
+        'usuario', 'codigo', 'creacion','expiracion','Eliminado'
     ];
 }
