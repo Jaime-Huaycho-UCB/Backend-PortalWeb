@@ -20,12 +20,18 @@ class UsuarioController extends Controller{
             if ($usuario){
                 // if (Hash::check($contrasena,$usuario['contrasena'])){
                 if ($contrasena==$usuario['contrasena']){
+                    $token = $this->crearToken($usuario['id']);
+                    if (!($token['salida'])){
+                        return $token;
+                    }
+
                     return response()->json([
                         "salida" => true,
                         "mensaje" => "Inicio de sesion exitoso",
                         "id" => $usuario['id'],
                         "permiso" => $usuario['permiso'],
-                        "docente" => $usuario['docente']
+                        "docente" => $usuario['docente'],
+                        "token" => $token['token']
                     ],200);
                 }else{
                     return response()->json([
@@ -76,6 +82,9 @@ class UsuarioController extends Controller{
             $usuario->contrasena = $request->input('password');
             $usuario->permiso = 0;
             $usuario->save();
+
+            $this->inicializarToken($usuario->id);
+
             return response()->json([
                 "mensaje" => "Se registro exitosamente al docente"
             ],200);

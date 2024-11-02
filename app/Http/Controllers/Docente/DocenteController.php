@@ -13,6 +13,16 @@ use Illuminate\Http\Request;
 class DocenteController extends Controller{
 
     public function agregarDocente(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
+
         $fotoController = new FotoController();
         if (!($this->existe($request->input('correo')))){
             $idFoto = $fotoController->ingresarFoto($request->input('fotoBase64'));
@@ -45,6 +55,15 @@ class DocenteController extends Controller{
     }
 
     public function obtenerDocentes(Request $request){
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
+
         $docentes = Docente::where('Eliminado','=',0)
                             ->where('nombre','<>','SuperUsuario')->get();
         if ($docentes->isNotEmpty()){
@@ -80,6 +99,15 @@ class DocenteController extends Controller{
     }
 
     public function eliminarDocente(Request $request){
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
+
         $id  = $request->input('docente');
         $docente = Docente::find($id);
         $docente->Eliminado = 1;
@@ -90,6 +118,16 @@ class DocenteController extends Controller{
     }
 
     public function actualizarDocente(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
+
         $id = $request->input('id');
         $fotoController = new FotoController();
         $docente = Docente::find($id);
@@ -129,7 +167,7 @@ class DocenteController extends Controller{
         return $docente;
     }
 
-    public function obtenerDocentesTodo(Request $request){
+    public function obtenerDocentesTodo(){
         $docentes = Docente::where('Eliminado','=',0)
                             ->where('nombre','<>','SuperUsuario')->get();
         if ($docentes->isNotEmpty()){

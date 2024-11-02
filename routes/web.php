@@ -22,7 +22,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'docente'], function () use ($router){
     // Funciones con token
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
-    $router->post('/obtener/todo','Docente\DocenteController@obtenerDocentesTodo');
+    $router->get('/obtener/todo','Docente\DocenteController@obtenerDocentesTodo');
     $router->put('/eliminar','Docente\DocenteController@eliminarDocente');
     $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
     // Funciones sin token
