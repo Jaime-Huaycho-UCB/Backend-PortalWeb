@@ -42,7 +42,7 @@ class FotoController extends Controller{
         ],200);
     }
 
-    public function actualizarRuta(int $id,string $fotoBase64){
+    public function actualizarFoto(int $id,string $fotoBase64){
         if ($fotoBase64) {
             $fotoContenido = base64_decode($fotoBase64);
             $finfo = new \finfo(FILEINFO_MIME_TYPE);

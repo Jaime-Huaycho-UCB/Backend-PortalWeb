@@ -55,6 +55,7 @@ class DocenteController extends Controller{
     }
 
     public function obtenerDocentes(Request $request){
+
         $token = $request->input('token');
         $idUsuario = $request->input('idUsuario');
         if (!($this->tokenValido($idUsuario,$token))){
@@ -99,6 +100,7 @@ class DocenteController extends Controller{
     }
 
     public function eliminarDocente(Request $request){
+        
         $token = $request->input('token');
         $idUsuario = $request->input('idUsuario');
         if (!($this->tokenValido($idUsuario,$token))){
@@ -131,7 +133,7 @@ class DocenteController extends Controller{
         $id = $request->input('id');
         $fotoController = new FotoController();
         $docente = Docente::find($id);
-        $idFoto = $fotoController->actualizarRuta($docente->foto,$request->input('foto'));
+        $idFoto = $fotoController->actualizarFoto($docente->foto,$request->input('foto'));
         $docente->nombre = $request->input('nombre');
         $docente->correo = $request->input('correo');
         $docente->titulo = $request->input('titulo');
