@@ -28,9 +28,9 @@ class UsuarioController extends Controller{
                     return response()->json([
                         "salida" => true,
                         "mensaje" => "Inicio de sesion exitoso",
-                        "id" => $usuario['id'],
+                        "idUsuario" => $usuario['id'],
                         "permiso" => $usuario['permiso'],
-                        "docente" => $usuario['docente'],
+                        "idDocente" => $usuario['docente'],
                         "token" => $token['token']
                     ],200);
                 }else{
@@ -54,13 +54,25 @@ class UsuarioController extends Controller{
     }
 
     public function eliminarUsuario(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
+        
         $id = $request->input('id');
         $usuario = Usuario::find($id);
         $usuario->Eliminado = 1;
         $usuario->save();
+        $this->eliminarToken($id);
         return response()->json([
             "mensaje" => "El usuario fue eliminado exitosamente"
         ],200);
+
     }
 
     public function existeUsuario(int $idDocente){
@@ -75,6 +87,16 @@ class UsuarioController extends Controller{
     }
 
     public function crearUsuario(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
+
         $idDocente = $request->Input('idDocente');
         if (!($this->existeUsuario($idDocente))){
             $usuario = new Usuario();
@@ -96,6 +118,16 @@ class UsuarioController extends Controller{
     }
 
     public function obtenerUsuarios(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" =>$this->TOKEN_INVALIDO
+            ],200);
+        }
+
         $docenteController = new DocenteController();
         $usuarios = Usuario::where('Eliminado','=',0)
                             ->where('permiso','=',0)

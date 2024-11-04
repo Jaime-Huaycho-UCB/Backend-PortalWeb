@@ -7,14 +7,15 @@ use App\Models\Token;
 use DateTime;
 use Exception;
 
-class Controller extends BaseController
-{
+class Controller extends BaseController{
+
+    public $TOKEN_INVALIDO = "TKIN";
     public function crearToken($idUsuario){
         $tiempoActual = new DateTime();
         try{
             $codigo = $this->generarToken();
             $creacion = $tiempoActual->format('Y-m-d H:i:s');
-            $tiempoActual->modify('+20 minutes');
+            $tiempoActual->modify('+1 minutes');
             $expiracion = $tiempoActual->format('Y-m-d H:i:s');
             $respuesta = Token::where('usuario','=',$idUsuario)->
                                 update([
@@ -30,7 +31,7 @@ class Controller extends BaseController
             }else{
                 return [
                     'salida' => false,
-                    'mensaje' => "no se actualizao el token"
+                    'mensaje' => "no se actualizo el token"
                 ];
             }
         }catch(Exception $e){
@@ -72,5 +73,11 @@ class Controller extends BaseController
     public function generarToken($longitud = 50) {
         $bytes = random_bytes($longitud);
         return bin2hex($bytes);
+    }
+
+    public function eliminarToken($id){
+        $token = Token::where('usuario','=',$id)->update([
+            "Eliminado" => 1
+        ]);
     }
 }

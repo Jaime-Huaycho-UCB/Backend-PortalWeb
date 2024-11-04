@@ -47,6 +47,8 @@ $router->group(['prefix' => 'noticia'], function () use ($router){
 });
 
 $router->group(['prefix' => 'evento'], function () use ($router){
+    $router->get('/obtener','EventoController@obtenerEventos');
+    $router->post('/agregar','EventoController@ingresarEvento');
 });
 
 $router->group(['prefix' => 'estudiante'], function () use ($router){

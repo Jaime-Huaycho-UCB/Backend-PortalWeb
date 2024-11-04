@@ -19,7 +19,7 @@ class DocenteController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 
@@ -61,12 +61,12 @@ class DocenteController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 
-        $docentes = Docente::where('Eliminado','=',0)
-                            ->where('nombre','<>','SuperUsuario')->get();
+        $docentes =Docente::where('Eliminado','=',0)->
+                            where('nombre','<>','SuperUsuario')->get();
         if ($docentes->isNotEmpty()){
             $docentesSalida = $this->llenarTituloFoto($docentes);
             $docentesSalida = $this->filtrarDocentesSinUsuario($docentesSalida);
@@ -106,7 +106,7 @@ class DocenteController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 
@@ -126,7 +126,7 @@ class DocenteController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class FotoController extends Controller{
     public function ingresarFoto($fotoBase64){
-        if ($fotoBase64) {
+        if ($fotoBase64!=null) {
             $fotoContenido = base64_decode($fotoBase64);
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $fotoTipo = $finfo->buffer($fotoContenido);
