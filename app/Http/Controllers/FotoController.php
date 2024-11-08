@@ -23,6 +23,11 @@ class FotoController extends Controller{
     }
 
     public function obtenerFoto(int $id){
+
+        if ($id==null){
+            return null;
+        }
+
         $foto = Foto::where('id','=',$id)
                     ->where('Eliminado','=',0)
                     ->first();
