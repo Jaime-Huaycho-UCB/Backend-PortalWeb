@@ -11,14 +11,14 @@ class EstudianteController extends Controller{
 
     public function agregarEstudiante(Request $request){
 
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => $this->TOKEN_INVALIDO
-        //     ],200);
-        // }
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
 
         $fotoController = new FotoController();
 
@@ -57,6 +57,17 @@ class EstudianteController extends Controller{
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->tesis = $idTesis;
             $idEstudiante->save();
+            return true;
+        }catch (Exception $e){
+            return false;
+        }
+    }
+
+    public function eliminarTesis($idEstudiante){
+        try{
+            $estudiante = Estudiante::find($idEstudiante);
+            $estudiante->tesis = null;
+            $estudiante->save();
             return true;
         }catch (Exception $e){
             return false;

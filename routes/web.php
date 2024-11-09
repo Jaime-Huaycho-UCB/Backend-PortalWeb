@@ -27,7 +27,15 @@ $router->group(['prefix' => 'docente'], function () use ($router){
     $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
     // Funciones sin token
     $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
-    $router->get('/titulos/obtener','Docente\TituloController@obtenerTitulos');
+    
+    $router->group(['prefix' => 'titulo'], function () use ($router){
+        $router->get('/obtener','Docente\TituloController@obtenerTitulos');
+    });
+    
+    $router->group(['prefix' => 'papers'], function () use ($router){
+        $router->get('/obtener/{idDocente}','Docente\PapersController@obtenerPapers');
+        $router->post('/ingresar','Docente\PapersController@ingresarPaper');
+    });
 });
 
 $router->group(['prefix' => 'usuario'], function () use ($router){
@@ -39,19 +47,31 @@ $router->group(['prefix' => 'usuario'], function () use ($router){
     //Funciones sin token
 });
 
-$router->group(['prefix' => 'titulo'], function () use ($router){
-    $router->get('/obtener','Docente\TituloController@obtenerTitulos');
-});
-
 $router->group(['prefix' => 'noticia'], function () use ($router){
+    $router->get('/obtener','NoticiaController@obtenerNoticias');
+    $router->post('/ingresar','NoticiaController@ingresarNoticia');
+
 });
 
 $router->group(['prefix' => 'evento'], function () use ($router){
     $router->get('/obtener','EventoController@obtenerEventos');
     $router->post('/agregar','EventoController@ingresarEvento');
+    $router->post('/eliminar','EventoController@eliminarEvento');
 });
 
 $router->group(['prefix' => 'estudiante'], function () use ($router){
+    $router->post('/agregar','Estudiante\EstudianteController@agregarEstudiante');
+
+    $router->group(['prefix' => 'tesis'], function () use ($router){    
+        $router->get('/obtener/{id}','Estudiante\TesisController@obtenerTesis');
+        $router->post('/ingresar','Estudiante\TesisController@ingresarTesis');
+        $router->post('/eliminar','Estudiante\TesisController@eliminarTesis');
+    });
+    
+    $router->group(['prefix' => 'nivelAcademico'], function () use ($router){    
+        $router->get('/obtener','Estudiante\NivelAcademicoController@obtenerNivelAcademico');
+        $router->post('/ingresar','Estudiante\NivelAcademicoController@ingresarNivelAcademico');
+    });
 });
 
 $router->group(['prefix' => 'solicitud'], function () use ($router){

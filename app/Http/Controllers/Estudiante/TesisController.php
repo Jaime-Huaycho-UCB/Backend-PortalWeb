@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Estudiante;
 use App\Http\Controllers\Controller;
 use App\Models\Estudiante\Tesis;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Estudiante\EstudianteController;
 
 
 class TesisController extends Controller{
@@ -31,17 +32,17 @@ class TesisController extends Controller{
 
     public function ingresarTesis(Request $request){
 
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => $this->TOKEN_INVALIDO
-        //     ],200);
-        // }
-        $idEstudiante = $request->input('idEstudiante');
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
 
-    
+        $idEstudiante = $request->input('idEstudiante');
+        $estudianteController = new EstudianteController;
 
         $titulo = $request->input('titulo');
         $fechaPublicacion = $request->input('fechaPublicacion');
@@ -60,58 +61,55 @@ class TesisController extends Controller{
             $tesis->resumen = $resumen;
             $tesis->save();
             $idTesis = $tesis->id;
-
+            
+            if ($estudianteController->agregarTesis($idEstudiante,$idTesis)){
+                return response()->json([
+                    "salida" => true,
+                    "mensaje" => " se inreso la tesisi exitosamente"
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "Eror al enlazar la tesis"
+                ],200);
+            }
         }else{
-            return null;
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "Tiene que haber contenido"
+            ],200);
         }
     }
 
     public function eliminarTesis(Request $request){
 
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => $this->TOKEN_INVALIDO
-        //     ],200);
-        // }
-
-        $id = $request->input('idTesis');
-        $tesis = Tesis::find($id);
-        $tesis->Eliminado = 1;
-        $tesis->save();
-        return response()->json([
-            "mensaje" => "La tesis se elimino exitosamente"
-        ],200);
-    }
-
-    public function actualizarTesis(int $id,$titulo,$tesisBase64,$fechaPublicacion,$resumen){
-
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => $this->TOKEN_INVALIDO
-        //     ],200);
-        // }
-
-        if ($tesisBase64) {
-            $tesisContenido = base64_decode($tesisBase64);
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $tesisTipo = $finfo->buffer($tesisContenido);
-            $tesis = Tesis::find($id);
-            $tesis->titulo = $titulo;
-            $tesis->contenido = $tesisContenido;
-            $tesis->tipo = $tesisTipo;
-            $tesis->fechaPublicacion = $fechaPublicacion;
-            $tesis->resumen = $resumen;
-            $tesis->save();
-            return $tesis->id;
-        }else{
-            return null;
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
         }
+
+        $idEstudiante = $request->input('idEstudiante');
+        $estudianteController = new EstudianteController;
+        if ($estudianteController->eliminarTesis($idEstudiante)){
+            $id = $request->input('idTesis');
+            $tesis = Tesis::find($id);
+            $tesis->Eliminado = 1;
+            $tesis->save();
+            return response()->json([
+                "salida" => true,
+                "mensaje" => "La tesis se elimino exitosamente"
+            ],200);
+        }else{
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "Error al intentar borrar una la tesis"
+            ],200);
+        }
+
         
     }
 }
