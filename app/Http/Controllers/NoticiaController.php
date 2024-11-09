@@ -12,7 +12,9 @@ class NoticiaController extends Controller{
 
     public function obtenerNoticias(){
         $fotoController = new FotoController();
-        $noticias = Noticia::all();
+        $noticias = Noticia::where('Eliminado','=',0)
+                            ->orderBy('fecha_publicacion','desc')
+                            ->get();
         if ($noticias->isNotEmpty()){
             $noticiasSalida = array();
             foreach ($noticias as $noticia){
@@ -48,6 +50,16 @@ class NoticiaController extends Controller{
     }
 
     public function ingresarNoticia(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" =>$this->TOKEN_INVALIDO
+            ],200);
+        }
+
         try{
             $fotoController = new FotoController();
             $fotoNoticia = $fotoController->ingresarFoto($request->input('fotoNoticia'));

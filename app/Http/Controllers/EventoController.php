@@ -45,14 +45,14 @@ class EventoController extends Controller{
 
     public function ingresarEvento(Request $request){
 
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => "token invalido"
-        //     ],200);
-        // }
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
 
         try{
             $fotoController = new FotoController();
@@ -79,14 +79,14 @@ class EventoController extends Controller{
 
     public function eliminarEvento(Request $request){
 
-        // $token = $request->input('token');
-        // $idUsuario = $request->input('idUsuario');
-        // if (!($this->tokenValido($idUsuario,$token))){
-        //     return response()->json([
-        //         "salida" => false,
-        //         "mensaje" => "token invalido"
-        //     ],200);
-        // }
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "token invalido"
+            ],200);
+        }
 
         $idEvento = $request->input('evento');
         $evento = Evento::find($idEvento);

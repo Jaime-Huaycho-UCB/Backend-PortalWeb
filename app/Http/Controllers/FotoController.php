@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Foto;
+use Exception;
 use Illuminate\Http\Request;
 
 
@@ -22,7 +23,12 @@ class FotoController extends Controller{
         }
     }
 
-    public function obtenerFoto(int $id){
+    public function obtenerFoto($id){
+
+        if ($id==null){
+            return null;
+        }
+
         $foto = Foto::where('id','=',$id)
                     ->where('Eliminado','=',0)
                     ->first();
@@ -32,17 +38,19 @@ class FotoController extends Controller{
         return $imagenBase64;
     }
 
-    public function eliminarFoto(Request $request){
-        $id = $request->input('foto');
-        $foto = Foto::find($id);
-        $foto->Eliminado = 1;
-        $foto->save();
-        return response()->json([
-            "mensaje" => "La foto se elimino exitosamente"
-        ],200);
+    public function eliminarFoto($idFoto){
+        try{
+            $id = $idFoto;
+            $foto = Foto::find($id);
+            $foto->Eliminado = 1;
+            $foto->save();
+            return true;
+        } catch (Exception $e){
+            return false;
+        }
     }
 
-    public function actualizarFoto(int $id,string $fotoBase64){
+    public function actualizarFoto(int $id,$fotoBase64){
         if ($fotoBase64) {
             $fotoContenido = base64_decode($fotoBase64);
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
