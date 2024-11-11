@@ -72,7 +72,7 @@ class EstudianteController extends Controller{
             return response()->json([
                 "salida" => false,
                 "mensaje" => "El estudiante ya existe"
-            ],400);
+            ],200);
         }
 
     }
@@ -137,7 +137,7 @@ class EstudianteController extends Controller{
             return response()->json([
                 "salida" => false,
                 "mensaje" => "El estudiante ya existe"
-            ],400);
+            ],200);
         }
     }
 
