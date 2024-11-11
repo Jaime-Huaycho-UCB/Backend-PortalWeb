@@ -51,7 +51,12 @@ class NivelAcademicoController extends Controller{
         }
     }
 
-    public function obtenerNombre(int $id){
+    public function obtenerNombre($id){
+
+        if ($id == null){
+            return null;
+        }
+
         $nombre = NivelAcademico::where('id','=',$id)->first();
         return $nombre['nombre'];
     }

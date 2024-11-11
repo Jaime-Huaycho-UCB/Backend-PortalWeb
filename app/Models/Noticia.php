@@ -16,6 +16,6 @@ class Noticia extends Model implements AuthenticatableContract, AuthorizableCont
     protected $table = 'NOTICIA';
     protected $primarykey = 'id';
     protected $fillable = [
-        'titulo','redactor','noticia','resumen','fecha_publicacion','fotoNoticia','fotoRelleno','Eliminado'
+        'titulo','redactor','noticia','resumen','fechaPublicacion','fotoNoticia','fotoRelleno','Eliminado'
     ];
 }

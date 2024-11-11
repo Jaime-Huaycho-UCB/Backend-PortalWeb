@@ -15,7 +15,7 @@ class Controller extends BaseController{
         try{
             $codigo = $this->generarToken();
             $creacion = $tiempoActual->format('Y-m-d H:i:s');
-            $tiempoActual->modify('+1 minutes');
+            $tiempoActual->modify('+5 minutes');
             $expiracion = $tiempoActual->format('Y-m-d H:i:s');
             $respuesta = Token::where('usuario','=',$idUsuario)->
                                 update([
@@ -57,7 +57,11 @@ class Controller extends BaseController{
             $expiracionToken = new DateTime($objetoToken['expiracion']);
             $tiempoActual = new DateTime();
             if ($expiracionToken>=$tiempoActual){
-                return true;
+                if ($this->extenderTiempoExpiracion($objetoToken['id'])){
+                    return true;
+                }else{
+                    return false;
+                }
             }else{
                 return false;
             }
@@ -79,5 +83,18 @@ class Controller extends BaseController{
         $token = Token::where('usuario','=',$id)->update([
             "Eliminado" => 1
         ]);
+    }
+
+    private function extenderTiempoExpiracion($idToken){
+        try{
+            $tiempoActual = new DateTime();
+            $tiempoActual->modify('+5 minutes');
+            $token = Token::find($idToken);
+            $token->expiracion = $tiempoActual;
+            $token->save();
+            return true;
+        } catch (Exception $e){
+            return false;
+        }
     }
 }

@@ -12,7 +12,7 @@ class EventoController extends Controller{
 
     public function obtenerEventos(){
         $fotoController = new FotoController();
-        $eventos = Evento::where('Eliminado','=',0)->get();
+        $eventos = Evento::where('Eliminado','=',0)->orderBy('fecha','asc')->get();
         if ($eventos->isNotEmpty()){
             $eventosSalida = array();
             foreach ($eventos as $evento){
@@ -50,7 +50,7 @@ class EventoController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 
@@ -84,7 +84,7 @@ class EventoController extends Controller{
         if (!($this->tokenValido($idUsuario,$token))){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "token invalido"
+                "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
 
@@ -96,5 +96,43 @@ class EventoController extends Controller{
             "salida" => true,
             "mensaje" => "EL evento fue eliminado exitosamente"
         ],200);
+    }
+
+    public function actualizarEvento(Request $request){
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
+
+
+        try{
+            $idEvento = $request->input('idEvento');
+            $fotoController = new FotoController();
+            
+            $evento = Evento::find($idEvento);
+            $evento->nombre = $request->input('nombre');
+            $evento->descripcion = $request->input('descripcion');
+            $evento->director = $request->input('director');
+            $evento->fecha = $request->input('fecha');
+            $evento->lugar = $request->input('lugar');
+            if ($request->input('fotoBase64')!=null){
+                $foto = $fotoController->ingresarFoto($request->input('fotoBase64'));
+                $evento->foto = $foto;
+            }
+            $evento->save();
+            return response()->json([
+                "salida" => true,
+                "mensaje" => "El evento se actualizo exitosamente"
+            ],200);
+        }catch (Exception $e){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $e->getMessage()
+            ],200);
+        }
     }
 }

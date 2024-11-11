@@ -40,8 +40,7 @@ class FotoController extends Controller{
 
     public function eliminarFoto($idFoto){
         try{
-            $id = $idFoto;
-            $foto = Foto::find($id);
+            $foto = Foto::find($idFoto);
             $foto->Eliminado = 1;
             $foto->save();
             return true;

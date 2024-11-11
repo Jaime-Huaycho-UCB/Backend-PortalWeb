@@ -41,7 +41,7 @@ $router->group(['prefix' => 'docente'], function () use ($router){
 $router->group(['prefix' => 'usuario'], function () use ($router){
     // Funciones con token
     $router->post('/inicioSesion','UsuarioController@iniciarSesion');
-    $router->post('/eliminar','UsuarioController@eliminarUsuario');
+    $router->put('/eliminar','UsuarioController@eliminarUsuario');
     $router->post('/crear','UsuarioController@crearUsuario');
     $router->post('/obtener','UsuarioController@obtenerUsuarios');
     //Funciones sin token
@@ -49,23 +49,29 @@ $router->group(['prefix' => 'usuario'], function () use ($router){
 
 $router->group(['prefix' => 'noticia'], function () use ($router){
     $router->get('/obtener','NoticiaController@obtenerNoticias');
-    $router->post('/ingresar','NoticiaController@ingresarNoticia');
+    $router->post('/agregar','NoticiaController@ingresarNoticia');
+    $router->put('/eliminar','NoticiaController@eliminarNoticia');
+    $router->put('/actualizar','NoticiaController@actualizarNoticia');
 
 });
 
 $router->group(['prefix' => 'evento'], function () use ($router){
     $router->get('/obtener','EventoController@obtenerEventos');
     $router->post('/agregar','EventoController@ingresarEvento');
-    $router->post('/eliminar','EventoController@eliminarEvento');
+    $router->put('/eliminar','EventoController@eliminarEvento');
+    $router->put('/actualizar','EventoController@actualizarEvento');
 });
 
 $router->group(['prefix' => 'estudiante'], function () use ($router){
     $router->post('/agregar','Estudiante\EstudianteController@agregarEstudiante');
+    $router->get('/obtener','Estudiante\EstudianteController@obtenerEstudiantes');
+    $router->put('/eliminar','Estudiante\EstudianteController@eliminarEstudiante');
+    $router->put('/actulizar','Estudiante\EstudianteController@actualizarEstudiante');
 
     $router->group(['prefix' => 'tesis'], function () use ($router){    
         $router->get('/obtener/{id}','Estudiante\TesisController@obtenerTesis');
         $router->post('/ingresar','Estudiante\TesisController@ingresarTesis');
-        $router->post('/eliminar','Estudiante\TesisController@eliminarTesis');
+        $router->put('/eliminar','Estudiante\TesisController@eliminarTesis');
     });
     
     $router->group(['prefix' => 'nivelAcademico'], function () use ($router){    
