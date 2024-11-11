@@ -118,7 +118,8 @@ class EstudianteController extends Controller{
             ],200);
         }
 
-        if (!($this->existe($request->input('correo')))){
+        
+        try{
             $idEstudiante = $request->input('idEstudiante');
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->nombre = $request->input('nombre');
@@ -133,10 +134,10 @@ class EstudianteController extends Controller{
                 "salida" => true,
                 "mensaje" => "Se actualizo exitosamente al estudiante"
             ],200);
-        }else{
+        } catch (Exception $e){
             return response()->json([
                 "salida" => false,
-                "mensaje" => "El estudiante ya existe"
+                "mensaje" => "Error: {$e->getMessage()}"
             ],200);
         }
     }
