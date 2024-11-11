@@ -9,18 +9,28 @@ use App\Http\Controllers\Estudiante\EstudianteController;
 
 class TesisController extends Controller{
 
-    public function obtenerTesis($id){
-        $tesis = Tesis::where('id','=',$id)->where('Eliminado','=',0)->first();
-        if ($tesis){
-            $tesis64Content = base64_encode($tesis['contenido']);
-            $tipo = $$tesis->tipo; 
-            $TesisBase64 = "data:$tipo;base64,$tesis64Content";
+    public function obtenerTesises(){
+        $tesises = Tesis::where('Eliminado','=',0)->get();
+        if ($tesises->isNotEmpty()){
+            $estudianteController = new EstudianteController();
+            $salida = array();
+            foreach ($tesises as $tesis){
+                $salidaTesis = [
+                    "id" => $tesis['id'],
+                    "titulo" => $tesis['titulo'],
+                    "fechaPublicacion" => $tesis['fechaPublicacion'],
+                    "resumen" => $tesis['resumen']
+                ];
+                $salidaEstudiante = $estudianteController->obtenerEstudiantePorTesis($tesis['id']);
+                array_push($salida,[
+                    "tesis" => $salidaTesis,
+                    "estudiante" => $salidaEstudiante
+                ]);
+            }
+            
             return response()->json([
                 "salida" => true,
-                "titulo" => $tesis['titulo'],
-                "tesis" => $TesisBase64,
-                "fechaPublicacion" => $tesis['fechaPublicacion'],
-                "resumen" => $tesis['resumen']
+                "tesises" => $salida
             ],200);
         }else{
             return response()->json([
@@ -28,6 +38,17 @@ class TesisController extends Controller{
                 "mensaje" => "No exite la tesis a encontrar"
             ],200);
         }
+    }
+
+    public function obtenerContenido($idTesis){
+        $tesis = Tesis::find($idTesis);
+        $tesis64Content = base64_encode($tesis->contenido);
+        $tipo = $$tesis->tipo; 
+        $TesisBase64 = "data:$tipo;base64,$tesis64Content";
+        return response()->json([
+            "salida" => true,
+            "contenido" => $TesisBase64
+        ],200);
     }
 
     public function ingresarTesis(Request $request){
@@ -59,24 +80,25 @@ class TesisController extends Controller{
             $tesis->tipo = $tesisTipo;
             $tesis->fechaPublicacion = $fechaPublicacion;
             $tesis->resumen = $resumen;
+
             $tesis->save();
             $idTesis = $tesis->id;
-            
-            if ($estudianteController->agregarTesis($idEstudiante,$idTesis)){
-                return response()->json([
-                    "salida" => true,
-                    "mensaje" => " se inreso la tesisi exitosamente"
-                ],200);
-            }else{
-                return response()->json([
-                    "salida" => false,
-                    "mensaje" => "Eror al enlazar la tesis"
-                ],200);
+            if ($idEstudiante!=null){
+                if (!($estudianteController->agregarTesis($idEstudiante,$idTesis))){
+                    return response()->json([
+                        "salida" => false,
+                        "mensaje" => "Error al enlazar la tesis con un estudiante"
+                    ],200);
+                }
             }
+            return response()->json([
+                "salida" => true,
+                "mensaje" => "Se ingreso la tesis exitosamente"
+            ],200);
         }else{
             return response()->json([
                 "salida" => false,
-                "mensaje" => "Tiene que haber contenido"
+                "mensaje" => "La tesis tiene que tener contenido"
             ],200);
         }
     }

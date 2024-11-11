@@ -117,7 +117,6 @@ class EstudianteController extends Controller{
                 "mensaje" => $this->TOKEN_INVALIDO
             ],200);
         }
-
         
         try{
             $idEstudiante = $request->input('idEstudiante');
@@ -168,4 +167,23 @@ class EstudianteController extends Controller{
             ],200);
         }
     }
+
+    public function obtenerEstudiantePorTesis($idTesis){
+        $estudiante = Estudiante::where('tesis','=',$idTesis)->where('Eliminado','=',0)->get();
+        if ($estudiante->isNotEmpty()){
+            $nivelAcademicoController = new NivelAcademicoController();
+            $fotoController = new FotoController();
+            $salidaEstudiante = $estudiante[0];
+            $preSalida = [
+                "id" => $salidaEstudiante['id'],
+                "nombre" => $salidaEstudiante['nombre'],
+                "nivelAcademico" => $nivelAcademicoController->obtenerNombre($salidaEstudiante['nivelAcademico']),
+                "correo" => $salidaEstudiante['correo'],
+                "foto" => $fotoController->obtenerFoto($salidaEstudiante['foto'])
+            ];
+            return $$preSalida;
+        }else{
+            return null;
+        }
+    }   
 }

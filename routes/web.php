@@ -69,7 +69,8 @@ $router->group(['prefix' => 'estudiante'], function () use ($router){
     $router->put('/actualizar','Estudiante\EstudianteController@actualizarEstudiante');
 
     $router->group(['prefix' => 'tesis'], function () use ($router){    
-        $router->get('/obtener/{id}','Estudiante\TesisController@obtenerTesis');
+        $router->get('/obtener/todo','Estudiante\TesisController@obtenerTesises');
+        $router->get('/obtener/contenido/{idTesis)','Estudiante\TesisController@obtenerContenido');
         $router->post('/ingresar','Estudiante\TesisController@ingresarTesis');
         $router->put('/eliminar','Estudiante\TesisController@eliminarTesis');
     });
