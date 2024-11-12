@@ -17,8 +17,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-
-
 $router->group(['prefix' => 'docente'], function () use ($router){
     // Funciones con token
     $router->post('/agregar','Docente\DocenteController@agregarDocente');
@@ -87,7 +85,17 @@ $router->group(['prefix' => 'solicitud'], function () use ($router){
 });
 
 $router->group(['prefix' => 'pensum'], function () use ($router){
+    $router->get('/obtener/{opcion}','PensumController@obtenerPensums');
+    $router->post('/ingresar','PensumController@ingresarPensum');
+    $router->put('/eliminar','PensumController@eliminarPensum');
+    $router->put('/actualizar','PensumController@actualizarPensum');
+    $router->put('/activar','PensumController@activarPensum');
+    $router->put('/desactivar','PensumController@desactivarPensum');
 });
 
 $router->group(['prefix' => 'contacto'], function () use ($router){
+    $router->get('/obtener','ContactoController@obtenerContactos');
+    $router->post('/ingresar','ContactoController@ingresarContacto');
+    $router->put('/eliminar','ContactoController@eliminarContacto');
+    $router->put('/actualizar','ContactoController@actualizarContacto');
 });

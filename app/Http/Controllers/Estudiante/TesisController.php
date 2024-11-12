@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Estudiante\Tesis;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Estudiante\EstudianteController;
-
+use Exception;
 
 class TesisController extends Controller{
 
@@ -41,14 +41,21 @@ class TesisController extends Controller{
     }
 
     public function obtenerContenido($idTesis){
-        $tesis = Tesis::find($idTesis);
-        $tesis64Content = base64_encode($tesis->contenido);
-        $tipo = $$tesis->tipo; 
-        $TesisBase64 = "data:$tipo;base64,$tesis64Content";
-        return response()->json([
-            "salida" => true,
-            "contenido" => $TesisBase64
-        ],200);
+        try{
+            $tesis = Tesis::find($idTesis);
+            $tesis64Content = base64_encode($tesis->contenido);
+            $tipo = $$tesis->tipo; 
+            $TesisBase64 = "data:$tipo;base64,$tesis64Content";
+            return response()->json([
+                "salida" => true,
+                "contenido" => $TesisBase64
+            ],200);
+        } catch(Exception $e){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "Error: {$e->getMessage()}"
+            ],200);
+        }
     }
 
     public function ingresarTesis(Request $request){
@@ -64,7 +71,6 @@ class TesisController extends Controller{
 
         $idEstudiante = $request->input('idEstudiante');
         $estudianteController = new EstudianteController;
-
         $titulo = $request->input('titulo');
         $fechaPublicacion = $request->input('fechaPublicacion');
         $tesisBase64 = $request->input('tesis');
@@ -131,7 +137,5 @@ class TesisController extends Controller{
                 "mensaje" => "Error al intentar borrar una la tesis"
             ],200);
         }
-
-        
     }
 }
