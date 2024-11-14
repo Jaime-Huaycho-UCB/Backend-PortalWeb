@@ -18,7 +18,7 @@ class TesisController extends Controller{
                 $salidaTesis = [
                     "id" => $tesis['id'],
                     "titulo" => $tesis['titulo'],
-                    "fechaPublicacion" => $tesis['fechaPublicacion'],
+                    "fechaPublicacion" => $tesis['fecha_publicacion'],
                     "resumen" => $tesis['resumen']
                 ];
                 $salidaEstudiante = $estudianteController->obtenerEstudiantePorTesis($tesis['id']);
@@ -44,7 +44,7 @@ class TesisController extends Controller{
         try{
             $tesis = Tesis::find($idTesis);
             $tesis64Content = base64_encode($tesis->contenido);
-            $tipo = $$tesis->tipo; 
+            $tipo = $tesis->tipo; 
             $TesisBase64 = "data:$tipo;base64,$tesis64Content";
             return response()->json([
                 "salida" => true,
@@ -84,7 +84,7 @@ class TesisController extends Controller{
             $tesis->titulo = $titulo;
             $tesis->contenido = $tesisContenido;
             $tesis->tipo = $tesisTipo;
-            $tesis->fechaPublicacion = $fechaPublicacion;
+            $tesis->fecha_publicacion = $fechaPublicacion;
             $tesis->resumen = $resumen;
 
             $tesis->save();

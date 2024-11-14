@@ -25,6 +25,7 @@ $router->group(['prefix' => 'docente'], function () use ($router){
     $router->put('/actualizar','Docente\DocenteController@actualizarDocente');
     // Funciones sin token
     $router->post('/obtener','Docente\DocenteController@obtenerDocentes');
+    $router->post('/obtener/informacion',"Docente\DocenteController@obtenerInformacionDocente");
     
     $router->group(['prefix' => 'titulo'], function () use ($router){
         $router->get('/obtener','Docente\TituloController@obtenerTitulos');
@@ -68,7 +69,7 @@ $router->group(['prefix' => 'estudiante'], function () use ($router){
 
     $router->group(['prefix' => 'tesis'], function () use ($router){    
         $router->get('/obtener/todo','Estudiante\TesisController@obtenerTesises');
-        $router->get('/obtener/contenido/{idTesis)','Estudiante\TesisController@obtenerContenido');
+        $router->get('/obtener/contenido/{idTesis}','Estudiante\TesisController@obtenerContenido');
         $router->post('/ingresar','Estudiante\TesisController@ingresarTesis');
         $router->put('/eliminar','Estudiante\TesisController@eliminarTesis');
     });

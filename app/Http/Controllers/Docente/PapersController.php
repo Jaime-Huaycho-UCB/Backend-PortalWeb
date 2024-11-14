@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\DB;
 class PapersController extends Controller{
 
     public function obtenerPapers($idDocente){
-        $query = "SELECT PAPERS.link as link FROM PAPERS,PAPERS_DOCENTE,DOCENTE WHERE PAPERS.id = PAPERS_DOCENTE.papers and DOCENTE.id = PAPERS_DOCENTE.docente and DOCENTE.id = ?";
+        $query = "SELECT PAPERS.id as id ,PAPERS.titulo as titulo ,PAPERS.link as link FROM PAPERS,PAPERS_DOCENTE,DOCENTE WHERE PAPERS.id = PAPERS_DOCENTE.papers and DOCENTE.id = PAPERS_DOCENTE.docente and DOCENTE.id = ? and PAPERS.Eliminado = 0";
         $papers = DB::select($query,[$idDocente]);
         if ($papers){
             return response()->json([
                 "salida" => true,
-                "links" => $papers
+                "papers" => $papers
             ],200);
         }else{
             return response()->json([
@@ -41,7 +41,8 @@ class PapersController extends Controller{
         try{
             $idDocente = $request->input('idDocente');
             $papers = new Papers();
-            $papers->link = $request->input('papers');
+            $papers->titulo = $request->input('titulo');
+            $papers->link = $request->input('link');
             $papers->save();
             if ($papersDocente->relacionarPapersDocente($idDocente,$papers->id)){
                 return response()->json([
@@ -51,9 +52,37 @@ class PapersController extends Controller{
             }else{
                 return response()->json([
                     "salida" => false,
-                    "Error al ingresar el papers"
+                    "mensaje" => "Error al ingresar el papers"
                 ],200);
             }
+        } catch (Exception $e){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => "Error: {$e->getMessage()}"
+            ],200);
+        }
+    }
+
+    public function eliminarPaper(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" =>$this->TOKEN_INVALIDO
+            ],200);
+        }
+        
+        try{
+            $idPaper = $request->input('idPaper');
+            $paper = Papers::find($idPaper);
+            $paper->Eliminado = 1;
+            $paper->save();
+            return response()->json([
+                "salida" => true,
+                "mensaje" => "El paper fue eliminado exitosamente"
+            ],200);
         } catch (Exception $e){
             return response()->json([
                 "salida" => false,

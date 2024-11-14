@@ -90,7 +90,7 @@ class EstudianteController extends Controller{
         try{
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->tesis = $idTesis;
-            $idEstudiante->save();
+            $estudiante->save();
             return true;
         }catch (Exception $e){
             return false;
@@ -98,6 +98,9 @@ class EstudianteController extends Controller{
     }
 
     public function eliminarTesis($idEstudiante){
+        if ($idEstudiante==null){
+            return true;
+        }
         try{
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->tesis = null;
@@ -181,7 +184,7 @@ class EstudianteController extends Controller{
                 "correo" => $salidaEstudiante['correo'],
                 "foto" => $fotoController->obtenerFoto($salidaEstudiante['foto'])
             ];
-            return $$preSalida;
+            return $preSalida;
         }else{
             return null;
         }

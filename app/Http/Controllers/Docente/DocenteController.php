@@ -202,4 +202,39 @@ class DocenteController extends Controller{
             ],200);
         }
     }
+    
+    public function obtenerInformacionDocente(Request $request){
+
+        $token = $request->input('token');
+        $idUsuario = $request->input('idUsuario');
+        if (!($this->tokenValido($idUsuario,$token))){
+            return response()->json([
+                "salida" => false,
+                "mensaje" => $this->TOKEN_INVALIDO
+            ],200);
+        }
+
+        $docente = $this->obtenerDocente($request->input('idDocente'));
+        if ($docente){
+            $tituloController = new TituloController();
+            $fotoController = new FotoController();
+            $salida = [
+                "id" => $docente['id'],
+                "nombre" => $docente['nombre'],
+                "correo" => $docente['correo'],
+                "titulo" => $tituloController->obtenerNombre($docente['titulo']),
+                "frase" => $docente['frase'],
+                "foto" => $fotoController->obtenerFoto($docente['foto'])
+            ];
+            return response()->json([
+                "salida" => true,
+                "informacion" => $salida
+            ],200);
+        }else{
+            return response()->json([
+                "salida" => false,
+                "mensaje"  => "No se pudo obtener al docente"
+            ],200);
+        }
+    }
 }
