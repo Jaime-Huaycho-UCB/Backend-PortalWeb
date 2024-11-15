@@ -15,7 +15,7 @@ class Controller extends BaseController{
         try{
             $codigo = $this->generarToken();
             $creacion = $tiempoActual->format('Y-m-d H:i:s');
-            $tiempoActual->modify('+5 minutes');
+            $tiempoActual->modify('+1 minutes');
             $expiracion = $tiempoActual->format('Y-m-d H:i:s');
             $respuesta = Token::where('usuario','=',$idUsuario)->
                                 update([
@@ -88,7 +88,7 @@ class Controller extends BaseController{
     private function extenderTiempoExpiracion($idToken){
         try{
             $tiempoActual = new DateTime();
-            $tiempoActual->modify('+5 minutes');
+            $tiempoActual->modify('+1 minutes');
             $token = Token::find($idToken);
             $token->expiracion = $tiempoActual;
             $token->save();
