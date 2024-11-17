@@ -10,17 +10,21 @@ use PhpParser\Node\Stmt\TryCatch;
 class NivelAcademicoController extends Controller{
 
     public function obtenerNivelAcademico(){
-        $niveles = NivelAcademico::where('Eliminado','=',0)->get();
-        if ($niveles->isNotEmpty()){
-            return response()->json([
-                "salida" => true,
-                "nivelesAcademicos" => $niveles
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "No existen niveles academicos"
-            ],200);
+        try{
+            $niveles = NivelAcademico::where('Eliminado','=',0)->get();
+            if ($niveles->isNotEmpty()){
+                return response()->json([
+                    "salida" => true,
+                    "nivelesAcademicos" => $niveles
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "No existen niveles academicos"
+                ],200);
+            }
+        } catch (Exception $e){
+            return $this->Error($e);
         }
     }
 
@@ -44,10 +48,7 @@ class NivelAcademicoController extends Controller{
                 "mensaje" => "Se ingreso exitosamente el nivel academico"
             ],200);
         }catch (Exception $e){
-            return response()->json([
-                "salida" =>  false,
-                "mensaje" => $e->getMessage()
-            ],200);
+            return $this->Error($e);
         }
     }
 

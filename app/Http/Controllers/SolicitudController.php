@@ -27,25 +27,26 @@ class SolicitudController extends Controller{
                 "mensaje" => "Se envio la solicitud exitosamente"
             ],200);
         } catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $e->getMessage()
-            ],200);
+            return $this->Error($e);
         }
     }
 
     public function obtenerSolicitudes(){
-        $solicitudes = Solicitud::where('Eliminado','=',0)->get();
-        if ($solicitudes->isNotEmpty()){
-            return response()->json([
-                "salida" => true,
-                "solicitudes" => $solicitudes
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "No hay solicitudes"
-            ],200);
+        try {
+            $solicitudes = Solicitud::where('Eliminado','=',0)->get();
+            if ($solicitudes->isNotEmpty()){
+                return response()->json([
+                    "salida" => true,
+                    "solicitudes" => $solicitudes
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "No hay solicitudes"
+                ],200);
+            }
+        } catch (Exception $e){
+            return $this->Error($e);
         }
     }
 }

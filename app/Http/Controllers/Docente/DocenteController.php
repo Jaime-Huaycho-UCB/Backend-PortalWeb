@@ -9,45 +9,49 @@ use App\Models\Docente\Docente;
 use App\Models\Docente\Titulo;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class DocenteController extends Controller{
 
     public function agregarDocente(Request $request){
+        try {
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
 
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-
-        $fotoController = new FotoController();
-        if (!($this->existe($request->input('correo')))){
-            $idFoto = $fotoController->ingresarFoto($request->input('fotoBase64'));
-            $docente = new Docente();
-            $docente->nombre = $request->input('nombre');
-            $docente->correo = $request->input('correo');
-            $docente->titulo = $request->input('titulo');
-            $docente->frase = $request->input('frase');
-            $docente->foto = $idFoto;
-            $docente->save();
-            return response()->json([
-                "salida" => true,
-                "mensaje" => "Se agrego exitosamente el docente"
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "El docente ya existe"
-            ],400);
+            $fotoController = new FotoController();
+            if (!($this->existe($request->input('correo')))){
+                $idFoto = $fotoController->ingresarFoto($request->input('fotoBase64'));
+                $docente = new Docente();
+                $docente->nombre = $request->input('nombre');
+                $docente->correo = $request->input('correo');
+                $docente->titulo = $request->input('titulo');
+                $docente->frase = $request->input('frase');
+                $docente->foto = $idFoto;
+                $docente->save();
+                return response()->json([
+                    "salida" => true,
+                    "mensaje" => "Se agrego exitosamente el docente"
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "El docente ya existe"
+                ],200);
+            }
+        }catch (Exception $e){
+            return $this->Error($e);
         }
     }
 
     public function existe(string $correo){
-        $docente = Docente::where('correo','=',$correo)->first();
+        $docente = Docente::where('correo','=',$correo)->where('Eliminado','=',0)->first();
         if ($docente){
             return $docente;
         }else{
@@ -56,29 +60,34 @@ class DocenteController extends Controller{
     }
 
     public function obtenerDocentes(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-
-        $docentes =Docente::where('Eliminado','=',0)->
-                            where('nombre','<>','SuperUsuario')->get();
-        if ($docentes->isNotEmpty()){
-            $docentesSalida = $this->llenarTituloFoto($docentes);
-            $docentesSalida = $this->filtrarDocentesSinUsuario($docentesSalida);
-            return response()->json([
-                "salida" => true,
-                "docentes" => $docentesSalida
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false
-            ],404);
+        try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+            
+            $docentes = Docente::where('Eliminado','=',0)
+                                ->where('correo','<>','superUsuario@gmail.com')
+                                ->get();
+            if ($docentes->isNotEmpty()){
+                $docentesSalida = $this->llenarTituloFoto($docentes);
+                $docentesSalida = $this->filtrarDocentesSinUsuario($docentesSalida);
+                return response()->json([
+                    "salida" => true,
+                    "docentes" => $docentesSalida
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "No hay docentes"
+                ],404);
+            }
+        } catch(Exception $e){
+            return $this->Error($e);
         }
     }
 
@@ -101,17 +110,16 @@ class DocenteController extends Controller{
     }
 
     public function eliminarDocente(Request $request){
-        
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $fotoController = new FotoController();
             $id  = $request->input('docente');
             $docente = Docente::find($id);
@@ -129,37 +137,44 @@ class DocenteController extends Controller{
                 ],200);
             }
         } catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "Error: {$e->getMessage()}"
-            ],400);
+            return $this->Error($e);
         }
     }
 
     public function actualizarDocente(Request $request){
+        try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
 
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
+            if ($this->existe($request->input('correo'))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "EL correo ingresado ya existe"
+                ],200);
+            }
+
+            $id = $request->input('id');
+            $fotoController = new FotoController();
+            $docente = Docente::find($id);
+            $idFoto = $fotoController->actualizarFoto($docente->foto,$request->input('foto'));
+            $docente->nombre = $request->input('nombre');
+            $docente->correo = $request->input('correo');
+            $docente->titulo = $request->input('titulo');
+            $docente->frase = $request->input('frase');
+            $docente->foto = $idFoto;
+            $docente->save();
             return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
+                "mensaje" => "Se actualizo exitosamente el docente"
             ],200);
+        } catch(Exception $e){
+            return $this->Error($e);
         }
-
-        $id = $request->input('id');
-        $fotoController = new FotoController();
-        $docente = Docente::find($id);
-        $idFoto = $fotoController->actualizarFoto($docente->foto,$request->input('foto'));
-        $docente->nombre = $request->input('nombre');
-        $docente->correo = $request->input('correo');
-        $docente->titulo = $request->input('titulo');
-        $docente->frase = $request->input('frase');
-        $docente->foto = $idFoto;
-        $docente->save();
-        return response()->json([
-            "mensaje" => "Se actualizo exitosamente el docente"
-        ],200);
     }
 
     public function filtrarDocentesSinUsuario($docentes){
@@ -187,54 +202,61 @@ class DocenteController extends Controller{
     }
 
     public function obtenerDocentesTodo(){
-        $docentes = Docente::where('Eliminado','=',0)
+        try {
+            $docentes = Docente::where('Eliminado','=',0)
                             ->where('correo','<>','superUsuario@gmail.com')
                             ->get();
-        if ($docentes->isNotEmpty()){
-            $docentesSalida = $this->llenarTituloFoto($docentes);
-            return response()->json([
-                "salida" => true,
-                "docentes" => $docentesSalida
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false
-            ],200);
+            if ($docentes->isNotEmpty()){
+                $docentesSalida = $this->llenarTituloFoto($docentes);
+                return response()->json([
+                    "salida" => true,
+                    "docentes" => $docentesSalida
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false
+                ],200);
+            }
+        } catch (Exception $e) {
+            return $this->Error($e);
         }
     }
     
     public function obtenerInformacionDocente(Request $request){
+        try{    
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
 
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-
-        $docente = $this->obtenerDocente($request->input('idDocente'));
-        if ($docente){
-            $tituloController = new TituloController();
-            $fotoController = new FotoController();
-            $salida = [
-                "id" => $docente['id'],
-                "nombre" => $docente['nombre'],
-                "correo" => $docente['correo'],
-                "titulo" => $tituloController->obtenerNombre($docente['titulo']),
-                "frase" => $docente['frase'],
-                "foto" => $fotoController->obtenerFoto($docente['foto'])
-            ];
-            return response()->json([
-                "salida" => true,
-                "informacion" => $salida
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje"  => "No se pudo obtener al docente"
-            ],200);
+            $docente = $this->obtenerDocente($request->input('idDocente'));
+            if ($docente){
+                $tituloController = new TituloController();
+                $fotoController = new FotoController();
+                $salida = [
+                    "id" => $docente['id'],
+                    "nombre" => $docente['nombre'],
+                    "correo" => $docente['correo'],
+                    "titulo" => $tituloController->obtenerNombre($docente['titulo']),
+                    "frase" => $docente['frase'],
+                    "foto" => $fotoController->obtenerFoto($docente['foto'])
+                ];
+                return response()->json([
+                    "salida" => true,
+                    "informacion" => $salida
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje"  => "No se pudo obtener al docente"
+                ],200);
+            }
+        } catch (Exception $e){
+            return $this->Error($e);
         }
     }
 }

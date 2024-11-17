@@ -43,12 +43,17 @@ class Controller extends BaseController{
     }
 
     public function inicializarToken($idUsuario){
-        $token = new Token();
-        $token->usuario = $idUsuario;
-        $token->codigo = null;
-        $token->creacion = null;
-        $token->expiracion = null;
-        $token->save();
+        try{
+            $token = new Token();
+            $token->usuario = $idUsuario;
+            $token->codigo = null;
+            $token->creacion = null;
+            $token->expiracion = null;
+            $token->save();
+            return true;
+        } catch (Exception $e){
+            return true;
+        }
     }
 
     public function tokenValido($idUsuario,$token){
@@ -96,5 +101,12 @@ class Controller extends BaseController{
         } catch (Exception $e){
             return false;
         }
+    }
+
+    public function Error(Exception $e){
+        return response()->json([
+            "salida" => false,
+            "mensaje" => "Error: {$e->getMessage()}"
+        ],200);
     }
 }

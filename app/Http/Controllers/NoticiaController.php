@@ -11,57 +11,60 @@ use Symfony\Component\Console\Input\Input;
 class NoticiaController extends Controller{
 
     public function obtenerNoticias(){
-        $fotoController = new FotoController();
-        $noticias = Noticia::where('Eliminado','=',0)
-                            ->orderBy('fechaPublicacion','desc')
-                            ->get();
-        if ($noticias->isNotEmpty()){
-            $noticiasSalida = array();
-            foreach ($noticias as $noticia){
-                $fotoNoticia = null;
-                $fotoRelleno = null;
-                if ($noticia['fotoNoticia']!=null){
-                    $fotoNoticia = $fotoController->obtenerFoto($noticia['fotoNoticia']);
+        try {
+            $fotoController = new FotoController();
+            $noticias = Noticia::where('Eliminado','=',0)
+                                ->orderBy('fechaPublicacion','desc')
+                                ->get();
+            if ($noticias->isNotEmpty()){
+                $noticiasSalida = array();
+                foreach ($noticias as $noticia){
+                    $fotoNoticia = null;
+                    $fotoRelleno = null;
+                    if ($noticia['fotoNoticia']!=null){
+                        $fotoNoticia = $fotoController->obtenerFoto($noticia['fotoNoticia']);
+                    }
+                    if ($noticia['fotoRelleno']!=null){
+                        $fotoRelleno = $fotoController->obtenerFoto($noticia['fotoRelleno']);
+                    }
+                    $noticiaLlena = [
+                        "idNoticia" => $noticia['id'],
+                        "titulo" => $noticia['titulo'],
+                        "redactor" => $noticia['redactor'],
+                        "noticia" => $noticia['noticia'],
+                        "resumen" => $noticia['resumen'],
+                        "fechaPublicacion" => $noticia['fechaPublicacion'],
+                        "fotoNoticia" => $fotoNoticia,
+                        "fotoRelleno" => $fotoRelleno
+                    ];
+                    array_push($noticiasSalida,$noticiaLlena);
                 }
-                if ($noticia['fotoRelleno']!=null){
-                    $fotoRelleno = $fotoController->obtenerFoto($noticia['fotoRelleno']);
-                }
-                $noticiaLlena = [
-                    "idNoticia" => $noticia['id'],
-                    "titulo" => $noticia['titulo'],
-                    "redactor" => $noticia['redactor'],
-                    "noticia" => $noticia['noticia'],
-                    "resumen" => $noticia['resumen'],
-                    "fechaPublicacion" => $noticia['fechaPublicacion'],
-                    "fotoNoticia" => $fotoNoticia,
-                    "fotoRelleno" => $fotoRelleno
-                ];
-                array_push($noticiasSalida,$noticiaLlena);
+                return response()->json([
+                    "salida" => true,
+                    "noticias" => $noticiasSalida
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "No hay noticias"
+                ],200);
             }
-            return response()->json([
-                "salida" => true,
-                "noticias" => $noticiasSalida
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "No hay noticias"
-            ],200);
+        } catch (Exception $e){
+            return $this->Error($e);
         }
     }
 
     public function ingresarNoticia(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" =>$this->TOKEN_INVALIDO
-            ],200);
-        }
-
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" =>$this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $fotoController = new FotoController();
             $fotoNoticia = $fotoController->ingresarFoto($request->input('fotoNoticia'));
             $fotoRelleno = $fotoController->ingresarFoto($request->input('fotoRelleno'));
@@ -79,25 +82,21 @@ class NoticiaController extends Controller{
                 "mensaje" => "La noticia se agrego exitosamente"
             ],200);
         }catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $e->getMessage()
-            ],200);
+            return $this->Error($e);
         }
     }
 
     public function actualizarNoticia(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" =>$this->TOKEN_INVALIDO
-            ],200);
-        }
-
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" =>$this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $idNoticia = $request->input('idNoticia');
             $fotoController = new FotoController();
             $noticia = Noticia::find($idNoticia);
@@ -122,25 +121,21 @@ class NoticiaController extends Controller{
                 "mensaje" => "La noticia se actualizo exitosamente"
             ],200);
         }catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $e->getMessage()
-            ],200);
+            return $this->Error($e);
         }
     }
 
     public function eliminarNoticia(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" =>$this->TOKEN_INVALIDO
-            ],200);
-        }
-
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" =>$this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $fotoController = new FotoController();
             $idNoticia = $request->input('idNoticia');
             $noticia = Noticia::find($idNoticia);
@@ -158,10 +153,7 @@ class NoticiaController extends Controller{
                 ],200);
             }
         } catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "Error: {$e->getMessage()}"
-            ],200);
+            return $this->Error($e);
         }
     }
 }

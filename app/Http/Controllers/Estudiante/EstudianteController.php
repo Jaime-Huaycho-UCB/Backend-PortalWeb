@@ -6,75 +6,84 @@ use App\Http\Controllers\FotoController;
 use App\Models\Estudiante\Estudiante;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EstudianteController extends Controller{
 
     public function obtenerEstudiantes(){
-        $estudiantes = Estudiante::where('Eliminado','=',0)->get();
-        if ($estudiantes->isNotEmpty()){
+        try{
+            $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
+                    "FROM ESTUDIANTE e,NIVEL_ACADEMICO n ".
+                    "WHERE e.ELiminado = 0";
+            $estudiantes=DB::select($query);
+            if (!($estudiantes)){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "No hay estudiantes registrados"
+                ],200);
+            }
             $estudiantesSalida = $this->llenarDatos($estudiantes);
+            if (!($estudiantesSalida)){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "Hubo un error al llenar las fotos"
+                ],200);
+            }
+
             return response()->json([
                 "salida" => true,
                 "estudiantes" => $estudiantesSalida
             ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "No hay estudiantes registrados"
-            ],200);
+        } catch (Exception $e){
+            return $this->Error($e);
         }
     }
 
-    public function llenarDatos($estudiantes){
-        $nivelAcademicoController = new NivelAcademicoController();
-        $fotoController = new FotoController();
-        $salida = array();
-        foreach ($estudiantes as $estudiante){
-            $preSalida = [
-                "id" => $estudiante['id'],
-                "nombre" => $estudiante['nombre'],
-                "nivelAcademico" => $nivelAcademicoController->obtenerNombre($estudiante['nivelAcademico']),
-                "correo" => $estudiante['correo'],
-                "tesis" => $estudiante['tesis'],
-                "foto" => $fotoController->obtenerFoto($estudiante['foto'])
-            ];
-            array_push($salida,$preSalida);
+    private function llenarDatos($estudiantes){
+        try{
+            $fotoController = new FotoController();
+            for ($i=0;$i<count($estudiantes);$i++){
+                $estudiantes[$i]->foto=$fotoController->obtenerFoto($estudiantes[$i]->foto);
+            }
+            return $estudiantes;
+        } catch (Exception $e){
+            return false;
         }
-        return $salida;
     }
 
     public function agregarEstudiante(Request $request){
+        try {
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
 
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
+            $fotoController = new FotoController();
+            if (!($this->existe($request->input('correo')))){
+                $estudiante = new Estudiante();
+                $estudiante->nombre = $request->input('nombre');
+                $estudiante->nivelAcademico = $request->input('nivelAcademico');
+                $estudiante->correo = $request->input('correo');
+                $estudiante->tesis = null;
+                $estudiante->foto = $fotoController->ingresarFoto($request->input('foto'));
+                $estudiante->save();
+                return response()->json([
+                    "salida" => true,
+                    "mensaje" => "Se agrego exitosamente el estudiante"
+                ],200);
+            }else{
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "El estudiante ya existe"
+                ],200);
+            }
+        } catch (Exception $e){
+            return $this->Error($e);
         }
-
-        $fotoController = new FotoController();
-
-        if (!($this->existe($request->input('correo')))){
-            $estudiante = new Estudiante();
-            $estudiante->nombre = $request->input('nombre');
-            $estudiante->nivelAcademico = $request->input('nivelAcademico');
-            $estudiante->correo = $request->correo;
-            $estudiante->tesis = null;
-            $estudiante->foto = $fotoController->ingresarFoto($request->input('foto'));
-            $estudiante->save();
-            return response()->json([
-                "salida" => true,
-                "mensaje" => "Se agrego exitosamente el estudiante"
-            ],200);
-        }else{
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "El estudiante ya existe"
-            ],200);
-        }
-
     }
 
     public function existe(string $correo){
@@ -111,22 +120,28 @@ class EstudianteController extends Controller{
         }
     }
     public function actualizarEstudiante(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-        
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
+            if ($this->existe($request->input('correo'))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => "El correo del estudiante ya existe"
+                ],200);
+            }
+
             $idEstudiante = $request->input('idEstudiante');
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->nombre = $request->input('nombre');
             $estudiante->nivelAcademico = $request->input('nivelAcademico');
-            $estudiante->correo = $request->correo;
+            $estudiante->correo = $request->input('correo');
             if ($request->input('foto')!=null){
                 $fotoController = new FotoController();
                 $estudiante->foto = $fotoController->ingresarFoto($request->input('foto'));
@@ -137,24 +152,21 @@ class EstudianteController extends Controller{
                 "mensaje" => "Se actualizo exitosamente al estudiante"
             ],200);
         } catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "Error: {$e->getMessage()}"
-            ],200);
+            return $this->Error($e);
         }
     }
 
     public function eliminarEstudiante(Request $request){
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-        
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $idEstudiante = $request->input('idEstudiante');
             $estudiante = Estudiante::find($idEstudiante);
             $estudiante->Eliminado = 1;
@@ -164,10 +176,7 @@ class EstudianteController extends Controller{
                 "mensaje" => "Se elimino al estudiante exitosamente"
             ],200);
         }catch (Exception $e){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => "Error: {$e->getMessage()}"
-            ],200);
+            return $this->Error($e);
         }
     }
 
