@@ -111,6 +111,7 @@ class UsuarioController extends Controller{
             if (!($this->existeUsuario($idDocente))){
                 $usuario = new Usuario();
                 $usuario->docente = $idDocente;
+                // $usuario->contrasena = Hash::make($request->input('password'));
                 $usuario->contrasena = $request->input('password');
                 $usuario->permiso = 0;
                 $usuario->save();

@@ -107,6 +107,6 @@ class Controller extends BaseController{
         return response()->json([
             "salida" => false,
             "mensaje" => "Error: {$e->getMessage()}"
-        ],200);
+        ],400);
     }
 }

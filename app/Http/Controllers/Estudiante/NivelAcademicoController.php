@@ -29,17 +29,16 @@ class NivelAcademicoController extends Controller{
     }
 
     public function ingresarNivelAcademico(Request $request){
-
-        $token = $request->input('token');
-        $idUsuario = $request->input('idUsuario');
-        if (!($this->tokenValido($idUsuario,$token))){
-            return response()->json([
-                "salida" => false,
-                "mensaje" => $this->TOKEN_INVALIDO
-            ],200);
-        }
-
         try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $nivelAcademico = new NivelAcademico();
             $nivelAcademico->nombre = $request->input('nombre');
             $nivelAcademico->save();
