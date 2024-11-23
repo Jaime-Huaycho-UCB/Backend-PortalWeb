@@ -118,7 +118,7 @@ class PublicacionController extends Controller{
     }
 
     private function llenarFoto($publicaciones){
-        try{
+        // try{
             $fotoController = new FotoController();
             $salida = array();
             foreach ($publicaciones as $publicacion){
@@ -133,8 +133,8 @@ class PublicacionController extends Controller{
                 array_push($salida,$preSalida);
             }
             return $salida;
-        } catch (Exception $e){
-            return null;
-        }
+        // } catch (Exception $e){
+        //     return null;
+        // }
     }
 }
