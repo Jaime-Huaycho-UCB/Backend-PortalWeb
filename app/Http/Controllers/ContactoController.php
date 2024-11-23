@@ -94,7 +94,7 @@ class ContactoController extends Controller{
         }
     }
 
-    public function actualzarContacto(Request $request){
+    public function actualizarContacto(Request $request){
         try{
             $token = $request->input('token');
             $idUsuario = $request->input('idUsuario');
