@@ -40,6 +40,9 @@ class FotoController extends Controller{
 
     public function eliminarFoto($idFoto){
         try{
+            if ($idFoto==null){
+                return true;
+            }
             $foto = Foto::find($idFoto);
             $foto->Eliminado = 1;
             $foto->save();
@@ -49,8 +52,8 @@ class FotoController extends Controller{
         }
     }
 
-    public function actualizarFoto(int $id,$fotoBase64){
-        if ($fotoBase64) {
+    public function actualizarFoto($id,$fotoBase64){
+        if ($fotoBase64!=null && $id!=null) {
             $fotoContenido = base64_decode($fotoBase64);
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $fotoTipo = $finfo->buffer($fotoContenido);
