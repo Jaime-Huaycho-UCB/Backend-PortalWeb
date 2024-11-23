@@ -173,6 +173,7 @@ class DocenteController extends Controller{
             $docente->foto = $idFoto;
             $docente->save();
             return response()->json([
+                "salida" => true,
                 "mensaje" => "Se actualizo exitosamente el docente"
             ],200);
         } catch(Exception $e){
