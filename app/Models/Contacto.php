@@ -16,6 +16,6 @@ class Contacto extends Model implements AuthenticatableContract, AuthorizableCon
     protected $table = 'CONTACTO';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre','papel','Eliminado'
+        'nombre','correo','papel','Eliminado'
     ];
 }

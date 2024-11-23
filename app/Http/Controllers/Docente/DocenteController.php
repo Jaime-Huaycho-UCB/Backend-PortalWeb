@@ -201,11 +201,19 @@ class DocenteController extends Controller{
         return $docente;
     }
 
-    public function obtenerDocentesTodo(){
+    public function obtenerDocentesTodo($idTitulo){
         try {
-            $docentes = Docente::where('Eliminado','=',0)
-                            ->where('correo','<>','superUsuario@gmail.com')
-                            ->get();
+            if ($idTitulo==0){
+                $docentes = Docente::where('Eliminado','=',0)
+                ->where('correo','<>','superUsuario@gmail.com')
+                ->get();
+            }else{
+                $docentes = Docente::where('Eliminado','=',0)
+                ->where('correo','<>','superUsuario@gmail.com')
+                ->where('titulo','=',$idTitulo)
+                ->get();
+            }
+            
             if ($docentes->isNotEmpty()){
                 $docentesSalida = $this->llenarTituloFoto($docentes);
                 return response()->json([

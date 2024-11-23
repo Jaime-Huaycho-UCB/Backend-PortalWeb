@@ -41,6 +41,7 @@ class ContactoController extends Controller{
 
             $contacto = new Contacto();
             $contacto->nombre = $request->input('nombre');
+            $contacto->correo = $request->input('correo');
             $contacto->papel = $request->input('papel');
             $contacto->save();
         } catch (Exception $e){
@@ -86,6 +87,7 @@ class ContactoController extends Controller{
             $idContacto = $request->input('idContacto');
             $contacto = Contacto::find($idContacto);
             $contacto->nombre = $request->input('nombre');
+            $contacto->correo = $request->input('correo');
             $contacto->papel = $request->input('pepel');
             $contacto->save();
             return response()->json([
