@@ -96,7 +96,7 @@ $router->group(['prefix' => 'pensum'], function () use ($router){
 
 $router->group(['prefix' => 'contacto'], function () use ($router){
     $router->get('/obtener','ContactoController@obtenerContactos');
-    $router->post('/ingresar','ContactoController@ingresarContacto');
+    $router->post('/agregar','ContactoController@ingresarContacto');
     $router->put('/eliminar','ContactoController@eliminarContacto');
     $router->put('/actualizar','ContactoController@actualizarContacto');
 });
