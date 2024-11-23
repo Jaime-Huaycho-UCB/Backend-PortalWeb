@@ -143,6 +143,7 @@ class DocenteController extends Controller{
 
     public function actualizarDocente(Request $request){
         try{
+            $tituloController = new TituloController();
             $token = $request->input('token');
             $idUsuario = $request->input('idUsuario');
             if (!($this->tokenValido($idUsuario,$token))){
@@ -168,7 +169,7 @@ class DocenteController extends Controller{
             $idFoto = $fotoController->actualizarFoto($docente->foto,$request->input('foto'));
             $docente->nombre = $request->input('nombre');
             $docente->correo = $request->input('correo');
-            $docente->titulo = $request->input('titulo');
+            $docente->titulo = $tituloController->obtenerId($request->input('titulo'));
             $docente->frase = $request->input('frase');
             $docente->foto = $idFoto;
             $docente->save();
