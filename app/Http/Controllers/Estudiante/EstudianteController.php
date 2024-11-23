@@ -87,7 +87,9 @@ class EstudianteController extends Controller{
     }
 
     public function existe(string $correo){
-        $estudiante = Estudiante::where('correo','=',$correo)->first();
+        $estudiante = Estudiante::where('correo','=',$correo)
+                                ->where('Eliminado','=',0)
+                                ->first();
         if ($estudiante){
             return $estudiante;
         }else{
@@ -130,15 +132,19 @@ class EstudianteController extends Controller{
                 ],200);
             }
 
-            if ($this->existe($request->input('correo'))){
-                return response()->json([
-                    "salida" => false,
-                    "mensaje" => "El correo del estudiante ya existe"
-                ],200);
-            }
-
             $idEstudiante = $request->input('idEstudiante');
             $estudiante = Estudiante::find($idEstudiante);
+
+            if ($estudiante->correo != $request->input('correo')){
+                if ($this->existe($request->input('correo'))){
+                    return response()->json([
+                        "salida" => false,
+                        "mensaje" => "El correo del estudiante ya existe"
+                    ],200);
+                }
+            }
+            
+            
             $estudiante->nombre = $request->input('nombre');
             $estudiante->nivelAcademico = $request->input('nivelAcademico');
             $estudiante->correo = $request->input('correo');

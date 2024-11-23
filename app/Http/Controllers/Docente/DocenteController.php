@@ -152,16 +152,19 @@ class DocenteController extends Controller{
                 ],200);
             }
 
-            if ($this->existe($request->input('correo'))){
-                return response()->json([
-                    "salida" => false,
-                    "mensaje" => "EL correo ingresado ya existe"
-                ],200);
-            }
-
             $id = $request->input('id');
             $fotoController = new FotoController();
             $docente = Docente::find($id);
+
+            if ($docente->correo != $request->input('correo')){
+                if ($this->existe($request->input('correo'))){
+                    return response()->json([
+                        "salida" => false,
+                        "mensaje" => "EL correo ingresado ya existe"
+                    ],200);
+                }
+            }
+            
             $idFoto = $fotoController->actualizarFoto($docente->foto,$request->input('foto'));
             $docente->nombre = $request->input('nombre');
             $docente->correo = $request->input('correo');
