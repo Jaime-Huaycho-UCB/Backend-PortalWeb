@@ -109,4 +109,9 @@ class Controller extends BaseController{
             "mensaje" => "Error: {$e->getMessage()}"
         ],400);
     }
+
+    public function obtenerFechaActual(){
+        $fecha = date('Y-m-d');
+        return $fecha;
+    }
 }

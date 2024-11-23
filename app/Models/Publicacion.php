@@ -17,6 +17,6 @@ class Publicacion extends Model implements AuthenticatableContract, Authorizable
     protected $primarykey = 'id';
 
     protected $fillable = [
-        'nombre','foto','contenido','redactor','Eliminado'
+        'nombre','foto','fechaPublicacion','contenido','redactor','Eliminado'
     ];
 }

@@ -23,6 +23,7 @@ class PublicacionController extends Controller{
             $publicacion = new Publicacion();
             $publicacion->nombre = $request->input('nombre');
             $publicacion->foto = $fotoController->ingresarFoto($request->input('foto'));
+            $publicacion->fechaPublicacion = $this->obtenerFechaActual();
             $publicacion->contenido = $request->input('contenido');
             $publicacion->redactor = $request->input('redactor');
             $publicacion->save();
@@ -79,6 +80,7 @@ class PublicacionController extends Controller{
             if (($request->input('foto')) != null){
                 $publicacion->foto = $fotoController->ingresarFoto($request->input('foto'));
             }
+            $publicacion->fechaPublicacion = $this->obtenerFechaActual();
             $publicacion->contenido = $request->input('contenido');
             $publicacion->redactor = $request->input('redactor');
             $publicacion->save();
@@ -94,7 +96,9 @@ class PublicacionController extends Controller{
 
     public function obtenerPublicaciones(){
         try{
-            $publicaciones = Publicacion::where('Eliminado','=',0)->get();
+            $publicaciones = Publicacion::where('Eliminado','=',0)
+                                        ->orderBy('fechaPublicacion','desc')
+                                        ->get();
             if ($publicaciones->isEmpty()){
                 return response()->json([
                     "salida" => false,
@@ -122,6 +126,7 @@ class PublicacionController extends Controller{
                     "id" => $publicacion['id'],
                     "nombre" => $publicacion['nombre'],
                     "foto" => $fotoController->obtenerFoto($publicacion['foto']),
+                    "fechaPublicacion" => $publicacion['fechaPublicacion'],
                     "contenido" => $publicacion['contenido'],
                     "redactor" => $publicaciones['redactor']
                 ];
