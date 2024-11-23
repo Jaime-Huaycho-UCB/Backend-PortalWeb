@@ -101,3 +101,10 @@ $router->group(['prefix' => 'contacto'], function () use ($router){
     $router->put('/eliminar','ContactoController@eliminarContacto');
     $router->put('/actualizar','ContactoController@actualizarContacto');
 });
+
+$router->group(['prefix' => 'publicacion'], function () use ($router){
+    $router->get('/obtener','PublicacionController@obtenerPublicaciones');
+    $router->post('/agregar','PublicacionController@ingresarPublicacion');
+    $router->put('/eliminar','PublicacionController@eliminarPublicacion');
+    $router->put('/actualizar','PublicacionController@actualizarPublicacion');
+});
