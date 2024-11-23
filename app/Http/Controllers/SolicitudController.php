@@ -70,7 +70,7 @@ class SolicitudController extends Controller{
 
             $idSolicitud = $request->input('idSolicitud');
             $solicitud = Solicitud::find($idSolicitud);
-            $solicitud->Eliminar = 1;
+            $solicitud->Eliminado = 1;
             $solicitud->save();
 
             return response()->json([
