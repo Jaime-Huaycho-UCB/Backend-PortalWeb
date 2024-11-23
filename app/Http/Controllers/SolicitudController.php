@@ -29,8 +29,17 @@ class SolicitudController extends Controller{
         }
     }
 
-    public function obtenerSolicitudes(){
+    public function obtenerSolicitudes(Request $request){
         try {
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
             $solicitudes = Solicitud::where('Eliminado','=',0)->get();
             if ($solicitudes->isNotEmpty()){
                 return response()->json([
@@ -43,6 +52,32 @@ class SolicitudController extends Controller{
                     "mensaje" => "No hay solicitudes"
                 ],200);
             }
+        } catch (Exception $e){
+            return $this->Error($e);
+        }
+    }
+
+    public function eliminarSolicitud(Request $request){
+        try{
+            $token = $request->input('token');
+            $idUsuario = $request->input('idUsuario');
+            if (!($this->tokenValido($idUsuario,$token))){
+                return response()->json([
+                    "salida" => false,
+                    "mensaje" => $this->TOKEN_INVALIDO
+                ],200);
+            }
+
+            $idSolicitud = $request->input('idSolicitud');
+            $solicitud = Solicitud::find($idSolicitud);
+            $solicitud->Eliminar = 1;
+            $solicitud->save();
+
+            return response()->json([
+                "salida" => true,
+                "mensaje" => "La solicitud fue eliminada exitosamente"
+            ],200);
+
         } catch (Exception $e){
             return $this->Error($e);
         }

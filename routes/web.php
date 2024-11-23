@@ -81,8 +81,9 @@ $router->group(['prefix' => 'estudiante'], function () use ($router){
 });
 
 $router->group(['prefix' => 'solicitud'], function () use ($router){
-    $router->get('/obtener','SolicitudController@obtenerSolicitudes');
+    $router->post('/obtener','SolicitudController@obtenerSolicitudes');
     $router->post('/enviar','SolicitudController@enviarSolicitud');
+    $router->put('/eliminar','SolicitudController@eliminarSolicitud');
 });
 
 $router->group(['prefix' => 'pensum'], function () use ($router){
