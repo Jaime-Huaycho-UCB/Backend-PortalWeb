@@ -17,6 +17,6 @@ class Solicitud extends Model implements AuthenticatableContract, AuthorizableCo
     protected $primarykey = 'id';
 
     protected $fillable = [
-        'nombres','primerApellido','segundoApellido','correo','fechaNacimiento','telefono','codigoPostal','ciudad','escuelaProcedencia','Eliminado'
+        'nombres','primerApellido','segundoApellido','correo','telefono','ciudad','Eliminado'
     ];
 }

@@ -16,11 +16,9 @@ class SolicitudController extends Controller{
             $solicitud->primerApellido = $request->input('primerApellido');
             $solicitud->segundoApellido = $request->input('segundoApellido');
             $solicitud->correo = $request->input('correo');
-            $solicitud->fechaNacimiento = $request->input('fechaNacimiento');
             $solicitud->telefono = $request->input('telefono');
-            $solicitud->codigoPostal = $request->input('codigoPostal');
             $solicitud->ciudad = $request->input('ciudad');
-            $solicitud->escuelaProcedencia = $request->input('escuelaProcedencia');
+            $solicitud->mensaje = $request->input('mensaje');
             $solicitud->save();
             return response()->json([
                 "salida" => true,

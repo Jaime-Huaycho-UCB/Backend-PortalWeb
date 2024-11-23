@@ -109,7 +109,7 @@ class ContactoController extends Controller{
             $contacto = Contacto::find($idContacto);
             $contacto->nombre = $request->input('nombre');
             $contacto->correo = $request->input('correo');
-            $contacto->papel = $request->input('pepel');
+            $contacto->papel = $request->input('papel');
             $contacto->save();
             return response()->json([
                 "salida" => true,
