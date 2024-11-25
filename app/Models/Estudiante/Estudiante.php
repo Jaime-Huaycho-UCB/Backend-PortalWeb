@@ -16,6 +16,6 @@ class Estudiante extends Model implements AuthenticatableContract, AuthorizableC
     protected $table = 'ESTUDIANTE';
     protected $primarykey = 'id';
     protected $fillable = [
-        'nombre','nivelAcademico','correo','tesis','foto','Eliminado'
+        'nombre','nivelAcademico','correo','tesis','foto','semestre','Eliminado'
     ];
 }

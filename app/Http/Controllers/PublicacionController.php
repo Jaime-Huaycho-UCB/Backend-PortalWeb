@@ -21,6 +21,7 @@ class PublicacionController extends Controller{
 
             $fotoController = new FotoController();
             $publicacion = new Publicacion();
+            $publicacion->numero = $request->input('numero');
             $publicacion->nombre = $request->input('nombre');
             $publicacion->foto = $fotoController->ingresarFoto($request->input('foto'));
             $publicacion->fechaPublicacion = $this->obtenerFechaActual();
@@ -76,6 +77,7 @@ class PublicacionController extends Controller{
             $fotoController = new FotoController();
             $idPublicacion = $request->input('idPublicacion');
             $publicacion = Publicacion::find($idPublicacion);
+            $publicacion->numero = $request->input('numero');
             $publicacion->nombre = $request->input('nombre');
             if (($request->input('foto')) != null){
                 $publicacion->foto = $fotoController->ingresarFoto($request->input('foto'));
@@ -94,11 +96,18 @@ class PublicacionController extends Controller{
         }
     }
 
-    public function obtenerPublicaciones(){
+    public function obtenerPublicaciones($numero){
         try{
-            $publicaciones = Publicacion::where('Eliminado','=',0)
-                                        ->orderBy('fechaPublicacion','desc')
+            if ($numero==0){
+                $publicaciones = Publicacion::where('Eliminado','=',0)
+                                        ->orderBy('fechaPublicacion','asc')
                                         ->get();
+            }else{
+                $publicaciones = Publicacion::where('Eliminado','=',0)
+                                        ->where('numero','=',$numero)
+                                        ->orderBy('fechaPublicacion','asc')
+                                        ->get();
+            }
             if ($publicaciones->isEmpty()){
                 return response()->json([
                     "salida" => false,
@@ -124,6 +133,7 @@ class PublicacionController extends Controller{
             foreach ($publicaciones as $publicacion){
                 $preSalida = [
                     "id" => $publicacion['id'],
+                    "numero" => $publicacion['numero'],
                     "nombre" => $publicacion['nombre'],
                     "foto" => $fotoController->obtenerFoto($publicacion['foto']),
                     "fechaPublicacion" => $publicacion['fechaPublicacion'],

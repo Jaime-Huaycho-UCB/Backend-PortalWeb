@@ -10,10 +10,24 @@ use Exception;
 
 class EventoController extends Controller{
 
-    public function obtenerEventos(){
+    public function obtenerEventos($filtro){
         try{
             $fotoController = new FotoController();
-            $eventos = Evento::where('Eliminado','=',0)->orderBy('fecha','asc')->get();
+            if ($filtro==1){
+                $eventos =Evento::where('Eliminado','=',0)
+                                ->where('fecha','>=',$this->obtenerFechaActual())
+                                ->orderBy('fecha','asc')
+                                ->get();
+            }else if ($filtro==2){
+                $eventos =Evento::where('Eliminado','=',0)
+                                ->where('fecha','<',$this->obtenerFechaActual())
+                                ->orderBy('fecha','asc')
+                                ->get();
+            }else{
+                $eventos =Evento::where('Eliminado','=',0)
+                                ->orderBy('fecha','asc')
+                                ->get();
+            }
             if ($eventos->isNotEmpty()){
                 $eventosSalida = array();
                 foreach ($eventos as $evento){
@@ -39,7 +53,7 @@ class EventoController extends Controller{
             }else{
                 return response()->json([
                     "salida" => false,
-                    "mensaje" => "No hay noticias"
+                    "mensaje" => "No hay eventos"
                 ],200);
             }
         } catch (Exception $e){

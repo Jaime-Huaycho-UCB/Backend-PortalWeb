@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Estudiante;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -9,14 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Publicacion extends Model implements AuthenticatableContract, AuthorizableContract
+class Semestre extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
     public $timestamps = false;
-    protected $table = 'PUBLICACION';
+    protected $table = 'SEMESTRE';
     protected $primarykey = 'id';
-
     protected $fillable = [
-        'numero','nombre','foto','fechaPublicacion','contenido','redactor','Eliminado'
+        'cadena','semestre','anio','Eliminado'
     ];
 }

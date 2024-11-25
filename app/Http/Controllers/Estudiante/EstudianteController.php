@@ -10,18 +10,28 @@ use Illuminate\Support\Facades\DB;
 
 class EstudianteController extends Controller{
 
-    public function obtenerEstudiantes(){
+    public function obtenerEstudiantes($idSemestre){
         try{
-            $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
-                    "FROM ESTUDIANTE e,NIVEL_ACADEMICO n ".
-                    "WHERE e.ELiminado = 0";
-            $estudiantes=DB::select($query);
+            
+            if ($idSemestre!=0){
+                $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
+                "FROM ESTUDIANTE e,NIVEL_ACADEMICO n ".
+                "WHERE e.ELiminado = 0 AND e.semestre = ?";
+                $estudiantes=DB::select($query,[$idSemestre]);
+            }else{
+                $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
+                "FROM ESTUDIANTE e,NIVEL_ACADEMICO n ".
+                "WHERE e.ELiminado = 0";
+                $estudiantes=DB::select($query);
+            }
+            
             if (!($estudiantes)){
                 return response()->json([
                     "salida" => false,
                     "mensaje" => "No hay estudiantes registrados"
                 ],200);
             }
+
             $estudiantesSalida = $this->llenarDatos($estudiantes);
             if (!($estudiantesSalida)){
                 return response()->json([
@@ -62,7 +72,11 @@ class EstudianteController extends Controller{
                 ],200);
             }
 
+            $numSemestre = $request->input('semestre');
+            $anio = $request->input('anio');
+
             $fotoController = new FotoController();
+            $semestreController = new SemestreController();
             if (!($this->existe($request->input('correo')))){
                 $estudiante = new Estudiante();
                 $estudiante->nombre = $request->input('nombre');
@@ -70,6 +84,7 @@ class EstudianteController extends Controller{
                 $estudiante->correo = $request->input('correo');
                 $estudiante->tesis = null;
                 $estudiante->foto = $fotoController->ingresarFoto($request->input('foto'));
+                $estudiante->semestre = $semestreController->obtenerSemestre($numSemestre,$anio);
                 $estudiante->save();
                 return response()->json([
                     "salida" => true,
@@ -143,7 +158,9 @@ class EstudianteController extends Controller{
                     ],200);
                 }
             }
-            
+            $semestreController = new SemestreController();
+            $numSemestre = $request->input('semestre');
+            $anio = $request->input('anio');
             
             $estudiante->nombre = $request->input('nombre');
             $estudiante->nivelAcademico = $request->input('nivelAcademico');
@@ -152,6 +169,7 @@ class EstudianteController extends Controller{
                 $fotoController = new FotoController();
                 $estudiante->foto = $fotoController->ingresarFoto($request->input('foto'));
             }
+            $estudiante->semestre = $semestreController->obtenerSemestre($numSemestre,$anio);
             $estudiante->save();
             return response()->json([
                 "salida" => true,

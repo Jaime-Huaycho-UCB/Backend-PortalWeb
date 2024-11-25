@@ -38,12 +38,10 @@ $router->group(['prefix' => 'docente'], function () use ($router){
 });
 
 $router->group(['prefix' => 'usuario'], function () use ($router){
-    // Funciones con token
     $router->post('/inicioSesion','UsuarioController@iniciarSesion');
     $router->put('/eliminar','UsuarioController@eliminarUsuario');
     $router->post('/crear','UsuarioController@crearUsuario');
     $router->post('/obtener','UsuarioController@obtenerUsuarios');
-    //Funciones sin token
 });
 
 $router->group(['prefix' => 'noticia'], function () use ($router){
@@ -55,7 +53,7 @@ $router->group(['prefix' => 'noticia'], function () use ($router){
 });
 
 $router->group(['prefix' => 'evento'], function () use ($router){
-    $router->get('/obtener','EventoController@obtenerEventos');
+    $router->get('/obtener/{filtro}','EventoController@obtenerEventos');
     $router->post('/agregar','EventoController@ingresarEvento');
     $router->put('/eliminar','EventoController@eliminarEvento');
     $router->put('/actualizar','EventoController@actualizarEvento');
@@ -63,7 +61,7 @@ $router->group(['prefix' => 'evento'], function () use ($router){
 
 $router->group(['prefix' => 'estudiante'], function () use ($router){
     $router->post('/agregar','Estudiante\EstudianteController@agregarEstudiante');
-    $router->get('/obtener','Estudiante\EstudianteController@obtenerEstudiantes');
+    $router->get('/obtener/{idSemestre}','Estudiante\EstudianteController@obtenerEstudiantes');
     $router->put('/eliminar','Estudiante\EstudianteController@eliminarEstudiante');
     $router->put('/actualizar','Estudiante\EstudianteController@actualizarEstudiante');
 
@@ -78,6 +76,9 @@ $router->group(['prefix' => 'estudiante'], function () use ($router){
         $router->get('/obtener','Estudiante\NivelAcademicoController@obtenerNivelAcademico');
         $router->post('/ingresar','Estudiante\NivelAcademicoController@ingresarNivelAcademico');
     });
+    $router->group(['prefix' => 'semestre'], function () use ($router){    
+        $router->get('/obtener','Estudiante\SemestreController@obtenerSemestres');
+    });
 });
 
 $router->group(['prefix' => 'solicitud'], function () use ($router){
@@ -86,14 +87,14 @@ $router->group(['prefix' => 'solicitud'], function () use ($router){
     $router->put('/eliminar','SolicitudController@eliminarSolicitud');
 });
 
-$router->group(['prefix' => 'pensum'], function () use ($router){
-    $router->get('/obtener/{opcion}','PensumController@obtenerPensums');
-    $router->post('/ingresar','PensumController@ingresarPensum');
-    $router->put('/eliminar','PensumController@eliminarPensum');
-    $router->put('/actualizar','PensumController@actualizarPensum');
-    $router->put('/activar','PensumController@activarPensum');
-    $router->put('/desactivar','PensumController@desactivarPensum');
-});
+// $router->group(['prefix' => 'pensum'], function () use ($router){
+//     $router->get('/obtener/{opcion}','PensumController@obtenerPensums');
+//     $router->post('/ingresar','PensumController@ingresarPensum');
+//     $router->put('/eliminar','PensumController@eliminarPensum');
+//     $router->put('/actualizar','PensumController@actualizarPensum');
+//     $router->put('/activar','PensumController@activarPensum');
+//     $router->put('/desactivar','PensumController@desactivarPensum');
+// });
 
 $router->group(['prefix' => 'contacto'], function () use ($router){
     $router->get('/obtener','ContactoController@obtenerContactos');
@@ -103,7 +104,7 @@ $router->group(['prefix' => 'contacto'], function () use ($router){
 });
 
 $router->group(['prefix' => 'publicacion'], function () use ($router){
-    $router->get('/obtener','PublicacionController@obtenerPublicaciones');
+    $router->get('/obtener/{numero}','PublicacionController@obtenerPublicaciones');
     $router->post('/agregar','PublicacionController@ingresarPublicacion');
     $router->put('/eliminar','PublicacionController@eliminarPublicacion');
     $router->put('/actualizar','PublicacionController@actualizarPublicacion');
