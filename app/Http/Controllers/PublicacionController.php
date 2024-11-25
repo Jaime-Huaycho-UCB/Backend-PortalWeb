@@ -131,11 +131,15 @@ class PublicacionController extends Controller{
             $fotoController = new FotoController();
             $salida = array();
             foreach ($publicaciones as $publicacion){
+                $idFoto = null;
+                if ($publicacion['foto']!=null){
+                    $idFoto=$fotoController->obtenerFoto($publicacion['foto']);
+                }
                 $preSalida = [
                     "id" => $publicacion['id'],
                     "numero" => $publicacion['numero'],
                     "nombre" => $publicacion['nombre'],
-                    "foto" => $fotoController->obtenerFoto($publicacion['foto']),
+                    "foto" => $idFoto,
                     "fechaPublicacion" => $publicacion['fechaPublicacion'],
                     "contenido" => $publicacion['contenido'],
                     "redactor" => $publicacion['redactor']
