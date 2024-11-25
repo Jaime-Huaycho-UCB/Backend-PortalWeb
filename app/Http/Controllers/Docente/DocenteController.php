@@ -227,7 +227,8 @@ class DocenteController extends Controller{
                 ],200);
             }else{
                 return response()->json([
-                    "salida" => false
+                    "salida" => false,
+                    "mensaje" => "No hay docentes disponibles"
                 ],200);
             }
         } catch (Exception $e) {
