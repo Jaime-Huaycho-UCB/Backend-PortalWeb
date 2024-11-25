@@ -31,10 +31,10 @@ $router->group(['prefix' => 'docente'], function () use ($router){
         $router->get('/obtener','Docente\TituloController@obtenerTitulos');
     });
     
-    $router->group(['prefix' => 'papers'], function () use ($router){
-        $router->get('/obtener/{idDocente}','Docente\PapersController@obtenerPapers');
-        $router->post('/ingresar','Docente\PapersController@ingresarPaper');
-    });
+    // $router->group(['prefix' => 'papers'], function () use ($router){
+    //     $router->get('/obtener/{idDocente}','Docente\PapersController@obtenerPapers');
+    //     $router->post('/ingresar','Docente\PapersController@ingresarPaper');
+    // });
 });
 
 $router->group(['prefix' => 'usuario'], function () use ($router){
