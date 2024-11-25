@@ -31,7 +31,7 @@ class SemestreController extends Controller{
         try {
             $buscar = Semestre::where('semestre','=',$num)
                                 ->where('anio','=',$anio)  
-                                ->where('Eliminar','=',0)
+                                ->where('Eliminado','=',0)
                                 ->first();
             if ($buscar){
                 return $buscar['id'];
