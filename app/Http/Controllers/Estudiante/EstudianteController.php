@@ -16,7 +16,7 @@ class EstudianteController extends Controller{
             if ($idSemestre!=0){
                 $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
                 "FROM ESTUDIANTE e,NIVEL_ACADEMICO n ".
-                "WHERE e.ELiminado = 0 AND e.semestre = ?";
+                "WHERE e.ELiminado = 0 AND e.semestre = ? AND n.id = e.nivelAcademico";
                 $estudiantes=DB::select($query,[$idSemestre]);
             }else{
                 $query ="SELECT e.id, e.nombre, n.nombre as nivelAcademico, e.correo, e.tesis, e.foto ".
