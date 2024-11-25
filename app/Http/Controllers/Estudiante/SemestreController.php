@@ -11,7 +11,9 @@ class SemestreController extends Controller{
 
     public function obtenerSemestres(){
         try{
-            $semestres = Semestre::where('Eliminado','=',0)->get();
+            $semestres = Semestre::where('Eliminado','=',0)
+                                    ->orderBy('anio','desc')
+                                    ->get();
             if ($semestres->isNotEmpty()){
                 return response()->json([
                     "salida" => true,
